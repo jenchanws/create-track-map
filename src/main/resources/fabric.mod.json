@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "create-track-map",
+  "version": "${version}",
+  "name": "Create Track Map",
+  "description": "A map of Create train tracks",
+  "authors": ["LittleChaSiu"],
+  "license": "MIT",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "com.littlechasiu.trackmap.TrackMapModKt::init"
+      }
+    ]
+  },
+  "mixins": [
+    "create-track-map.mixins.json"
+  ],
+  "depends": {
+    "create": "*",
+    "fabricloader": ">=0.14.12",
+    "fabric": ">=0.73.2+1.12.2",
+    "fabric-language-kotlin": ">=1.9.1+kotlin.1.8.10",
+    "minecraft": ">=1.19.2",
+    "java": ">=17"
+  }
+}
