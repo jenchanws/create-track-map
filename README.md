@@ -22,16 +22,15 @@ map](https://cdn.modrinth.com/data/gxoNIjg6/images/42ed31bbb88df37f393a6f8a284cc
 
 CTM is a _server side_ only mod. It runs a web server, on port 3876 by default, that provides the following API:
 
--   `/static`
+-   `/api/network`, `/api/network.rt`: List of all track pieces and train stations
+-   `/api/signals`, `/api/signals.rt`: List of all train signals, including their states
+    (green, yellow, red)
+-   `/api/blocks`, `/api/blocks.rt`: List of all signal control blocks, and whether they are occupied or reserved by a train
+-   `/api/trains`, `/api/trains.rt`: List of all assembled trains, including their names and
+    positions
+-   `/api/style.css`: CSS style sheet generated from configured colors and fonts (Coming Soon™)
 
-    -   `/network`: List of all track pieces and train stations
-    -   `/signals`: List of all train signals, including their states
-        (green, yellow, red)
-    -   `/trains`: List of all assembled trains, including their names and
-        positions
-
--   `/rt`: Same as above, but updates in real time with Server-Sent Events
-    (SSE)
+The `.rt` versions update in real time with Server-Sent Events (SSE). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
 
 The map itself is visible at the root (by default
 `http://localhost:3876/`). The view is not configurable at this time, but

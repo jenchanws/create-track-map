@@ -59,10 +59,12 @@ dependencies {
 
   val ktor_version: String by project
   val kotlin_json_version: String by project
+  val kotlin_css_version: String by project
   includeImpl("io.ktor:ktor-server-core-jvm:$ktor_version")
   includeImpl("io.ktor:ktor-server-netty-jvm:$ktor_version")
   includeImpl("io.ktor:ktor-server-cors:$ktor_version")
   includeImpl("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
+  includeImpl("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
 }
 
 val targetJavaVersion = 17

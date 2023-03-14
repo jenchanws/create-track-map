@@ -10,6 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.css.CssBuilder
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -67,6 +68,10 @@ class Server {
     }
   }
 
+  private suspend inline fun ApplicationCall.respondCSS(builder: CssBuilder.() -> Unit) {
+    respondText(CssBuilder().apply(builder).toString(), ContentType.Text.CSS)
+  }
+
   private fun Application.module() {
     routing {
       static("/") {
@@ -78,21 +83,29 @@ class Server {
         }
       }
 
-      get("/static/network") { call.respondJSON(TrackMap.network) }
-      get("/static/signals") { call.respondJSON(TrackMap.signals) }
-      get("/static/blocks") { call.respondJSON(TrackMap.blocks) }
-      get("/static/trains") { call.respondJSON(TrackMap.trains) }
+      get("/api/style.css") {
+        call.respondCSS {
+          root {
+            // TODO: Implement color/font/etc variables from config
+          }
+        }
+      }
 
-      get("/rt/network") {
+      get("/api/network") { call.respondJSON(TrackMap.network) }
+      get("/api/signals") { call.respondJSON(TrackMap.signals) }
+      get("/api/blocks") { call.respondJSON(TrackMap.blocks) }
+      get("/api/trains") { call.respondJSON(TrackMap.trains) }
+
+      get("/api/network.rt") {
         call.respondSSE(TrackMap.network, TrackMap.networkFlow)
       }
-      get("/rt/signals") {
+      get("/api/signals.rt") {
         call.respondSSE(TrackMap.signals, TrackMap.signalFlow)
       }
-      get("/rt/blocks") {
+      get("/api/blocks.rt") {
         call.respondSSE(TrackMap.blocks, TrackMap.blockFlow)
       }
-      get("/rt/trains") {
+      get("/api/trains.rt") {
         call.respondSSE(TrackMap.trains, TrackMap.trainFlow)
       }
     }

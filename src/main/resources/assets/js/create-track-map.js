@@ -89,10 +89,10 @@ let trainLayer = L.layerGroup([], { pane: "trains" }).addTo(map);
 
 const baseUrl = "";
 
-const networkStream = new EventSource(`${baseUrl}/rt/network`);
-const blockStatusStream = new EventSource(`${baseUrl}/rt/blocks`);
-const signalStatusStream = new EventSource(`${baseUrl}/rt/signals`);
-const trainStatusStream = new EventSource(`${baseUrl}/rt/trains`);
+const networkStream = new EventSource(`${baseUrl}/api/network.rt`);
+const blockStatusStream = new EventSource(`${baseUrl}/api/blocks.rt`);
+const signalStatusStream = new EventSource(`${baseUrl}/api/signals.rt`);
+const trainStatusStream = new EventSource(`${baseUrl}/api/trains.rt`);
 
 networkStream.onmessage = (e) => {
   let { edges, stations } = JSON.parse(e.data);
