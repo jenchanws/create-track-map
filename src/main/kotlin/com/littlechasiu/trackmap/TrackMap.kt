@@ -72,6 +72,7 @@ object TrackMap {
 
     watcher.watchInterval = config.watchIntervalSeconds.seconds
     server.port = config.serverPort
+    server.mapStyle = config.mapStyle
   }
 
   private fun reload() {

@@ -10,7 +10,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.css.Color
 import kotlinx.css.CssBuilder
+import kotlinx.css.CssValue
+import kotlinx.css.quoted
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,6 +27,7 @@ class Server {
   }
 
   var port: Int = 3876
+  var mapStyle: MapStyle = MapStyle()
 
   private var server: NettyApplicationEngine? = null
 
@@ -72,6 +76,12 @@ class Server {
     respondText(CssBuilder().apply(builder).toString(), ContentType.Text.CSS)
   }
 
+  private fun CssBuilder.variables(vararg pairs: Pair<String, CssValue>) {
+    pairs.forEach { (name, value) ->
+      setCustomProperty(name, value)
+    }
+  }
+
   private fun Application.module() {
     routing {
       static("/") {
@@ -86,7 +96,22 @@ class Server {
       get("/api/style.css") {
         call.respondCSS {
           root {
-            // TODO: Implement color/font/etc variables from config
+            variables(
+              "ui-font" to mapStyle.font.quoted,
+              "map-background" to Color(mapStyle.colors.background),
+              "track-occupied" to Color(mapStyle.colors.track.occupied),
+              "track-reserved" to Color(mapStyle.colors.track.reserved),
+              "track-free" to Color(mapStyle.colors.track.free),
+              "signal-green" to Color(mapStyle.colors.signal.green),
+              "signal-yellow" to Color(mapStyle.colors.signal.yellow),
+              "signal-red" to Color(mapStyle.colors.signal.red),
+              "signal-outline" to Color(mapStyle.colors.signal.outline),
+              "portal-color" to Color(mapStyle.colors.portal.primary),
+              "portal-outline" to Color(mapStyle.colors.portal.outline),
+              "station-color" to Color(mapStyle.colors.station.primary),
+              "station-outline" to Color(mapStyle.colors.station.outline),
+              "train-color" to Color(mapStyle.colors.train),
+            )
           }
         }
       }
