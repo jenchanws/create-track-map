@@ -1,0 +1,54 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  background-color: #888;
+}
+
+.train-name,
+.station-name {
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-weight: bold;
+  font-size: 15px;
+}
+.station-name .track-number,
+.train-name .car-number {
+  display: inline-block;
+  width: 1.4em;
+  text-align: center;
+  border-radius: 0.7em;
+  background-color: #444;
+  color: white;
+}
+
+.signal-icon .frame,
+.station-icon .frame,
+.station-icon .icon {
+  fill: black;
+}
+.station-icon .fill,
+.portal-icon .frame,
+.portal-icon .door,
+.portal-icon .arrow {
+  fill: white;
+}
+.portal-icon .fill {
+  fill: purple;
+}
+
+.signal-icon[data-color="green"] .light {
+  fill: #71db51;
+}
+.signal-icon[data-color="yellow"] .light {
+  fill: #ffd15c;
+}
+.signal-icon[data-color="red"] .light {
+  fill: #ff5f5c;
+}

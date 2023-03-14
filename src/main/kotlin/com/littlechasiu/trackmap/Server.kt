@@ -78,6 +78,10 @@ class Server() {
       static("/") {
         staticBasePackage = "assets"
         defaultResource("index.html")
+        static("assets") {
+          static("css") { resources("css") }
+          static("js") { resources("js") }
+        }
       }
 
       get("/static/network") {
