@@ -1,11 +1,13 @@
 package com.littlechasiu.trackmap
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -13,15 +15,21 @@ import net.minecraft.commands.Commands
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.nio.file.Files
+import java.nio.file.StandardOpenOption
 import kotlin.time.Duration.Companion.seconds
 
 object TrackMap {
   const val MODID: String = "create-track-map"
 
   private const val configFileName = "$MODID.json"
-  private val GSON: Gson =
-    GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient()
-      .create()
+
+  @OptIn(ExperimentalSerializationApi::class)
+  private val JSON = Json {
+    isLenient = true
+    ignoreUnknownKeys = true
+    prettyPrint = true
+    prettyPrintIndent = "  "
+  }
 
   val LOGGER: Logger = LogManager.getLogger(MODID)
 
@@ -43,27 +51,23 @@ object TrackMap {
   val blockFlow = watcher.blockChannel.flow
   val trainFlow = watcher.trainChannel.flow
 
+  @OptIn(ExperimentalSerializationApi::class)
   private fun loadConfig() {
     try {
       val configFile =
         FabricLoader.getInstance().configDir.resolve(configFileName)
 
       if (Files.exists(configFile)) {
-        config = GSON.fromJson(
-          Files.newBufferedReader(configFile, Charsets.UTF_8),
-          Config::class.java
-        )
+        config = JSON.decodeFromStream(Files.newInputStream(configFile))
       } else {
         LOGGER.warn("Create Track Map config does not exist, writing defaults to $configFileName")
         config = Config()
-        val newConfigFile = Files.newBufferedWriter(configFile, Charsets.UTF_8)
-        GSON.toJson(config, newConfigFile)
-        newConfigFile.flush()
-        newConfigFile.close()
+        JSON.encodeToStream(config, Files.newOutputStream(configFile, StandardOpenOption.CREATE))
       }
     } catch (e: Exception) {
-      LOGGER.error("Error loading Create Track Map config")
+      LOGGER.error("Error loading Create Track Map config, using defaults")
       e.printStackTrace()
+      config = Config()
     }
 
     watcher.watchInterval = config.watchIntervalSeconds.seconds
@@ -83,7 +87,7 @@ object TrackMap {
   fun init() {
     loadConfig()
 
-    CommandRegistrationCallback.EVENT.register { disp, _, env ->
+    CommandRegistrationCallback.EVENT.register { disp, _, _ ->
       disp.register(Commands.literal("ctm").then(Commands.literal("reload")
         .requires { src -> src.hasPermission(4) }.executes { _ ->
           reload()

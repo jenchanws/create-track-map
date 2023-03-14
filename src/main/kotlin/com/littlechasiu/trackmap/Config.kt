@@ -1,10 +1,16 @@
 package com.littlechasiu.trackmap
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class Config(
-  @SerializedName("watch_interval_seconds")
+@Serializable
+data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
+  @SerialName("watch_interval_seconds")
+  @EncodeDefault
   val watchIntervalSeconds: Double = 0.5,
-  @SerializedName("server_port")
+  @SerialName("server_port")
+  @EncodeDefault
   val serverPort: Int = 3876,
 )
