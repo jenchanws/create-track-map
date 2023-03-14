@@ -19,8 +19,10 @@ import net.minecraft.world.phys.Vec3
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
-class TrackWatcher(private val watchInterval: Duration) {
+class TrackWatcher() {
+  var watchInterval: Duration = 0.5.seconds
   private var stopping: Boolean = false
   private var thread: Thread? = null
 
@@ -46,15 +48,21 @@ class TrackWatcher(private val watchInterval: Duration) {
 
   private suspend fun watch() {
     while (!stopping) {
-      update()
+      try {
+        update()
+      } catch (e: Exception) {
+        TrackMap.LOGGER.warn("Exception during update loop")
+        e.printStackTrace()
+        continue
+      }
       delay(watchInterval)
     }
   }
 
-  val networkChannel = Channel<Network>()
-  val signalChannel = Channel<SignalStatus>()
-  val trainChannel = Channel<TrainStatus>()
-  val blockChannel = Channel<BlockStatus>()
+  val networkChannel = Channel<Network>(Channel.CONFLATED)
+  val signalChannel = Channel<SignalStatus>(Channel.CONFLATED)
+  val trainChannel = Channel<TrainStatus>(Channel.CONFLATED)
+  val blockChannel = Channel<BlockStatus>(Channel.CONFLATED)
 
   data class CreateStation(
     val internal: GlobalStation,

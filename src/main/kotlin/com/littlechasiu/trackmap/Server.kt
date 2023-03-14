@@ -15,27 +15,32 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.Writer
 
-class Server(private val port: Int) {
+class Server() {
   @OptIn(ExperimentalSerializationApi::class)
   val jsonPretty = Json {
     prettyPrint = true
     prettyPrintIndent = "  "
   }
 
-  private val server = embeddedServer(Netty, port) {
-    install(CORS) {
-      anyHost()
-    }
-    module()
-  }
+  var port: Int = 3876
+
+  private var server: NettyApplicationEngine? = null
 
   fun start() {
-    server.start(false)
-    TrackMap.LOGGER.info("Started TrackMap server on port $port")
+    server = embeddedServer(Netty, port) {
+      install(CORS) {
+        anyHost()
+      }
+      module()
+    }
+    server?.start(false)
+    TrackMap.LOGGER.info("Started Create Track Map server on port $port")
   }
 
   fun stop() {
-    server.stop(1000, 5000)
+    TrackMap.LOGGER.info("Stopping Create Track Map server")
+    server?.stop(1000, 5000)
+    server = null
   }
 
   private inline fun <reified T> Writer.writeSSE(obj: T) {

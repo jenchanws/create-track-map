@@ -8,7 +8,6 @@ import com.simibubi.create.content.logistics.trains.TrackNodeLocation
 import com.simibubi.create.content.logistics.trains.entity.Carriage
 import com.simibubi.create.content.logistics.trains.entity.Train
 import com.simibubi.create.foundation.utility.Couple
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.phys.Vec3
 
 fun <T> MutableSet<T>.replaceWith(other: Collection<T>) {
@@ -56,9 +55,6 @@ val Carriage.sendable
       leading = this.leadingPoint.getPosition().sendable,
       trailing = this.trailingPoint.getPosition().sendable,
     )
-
-val Train.ownedBy: ServerPlayer?
-  get() = TrackMap.minecraft?.playerList?.getPlayer(owner)
 
 val Train.sendable
   get() =
