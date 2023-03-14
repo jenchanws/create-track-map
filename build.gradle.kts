@@ -16,7 +16,6 @@ group = maven_group
 
 repositories {
   mavenCentral()
-  jcenter()
   maven("https://maven.shedaniel.me/")
   maven("https://maven.terraformersmc.com/releases/")
   maven("https://maven.nucleoid.xyz/")
@@ -37,7 +36,7 @@ fun DependencyHandler.includeImpl(dep: String) {
 }
 
 fun DependencyHandler.includeModImpl(dep: String) {
-  implementation(dep)
+  modImplementation(dep)
   include(dep)
 }
 
@@ -56,13 +55,14 @@ dependencies {
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
 
   val porting_lib_version: String by project
-  includeModImpl("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
+  modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
 
   val ktor_version: String by project
+  val kotlin_json_version: String by project
   includeImpl("io.ktor:ktor-server-core-jvm:$ktor_version")
   includeImpl("io.ktor:ktor-server-netty-jvm:$ktor_version")
   includeImpl("io.ktor:ktor-server-cors:$ktor_version")
-  includeImpl("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+  includeImpl("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
 }
 
 val targetJavaVersion = 17

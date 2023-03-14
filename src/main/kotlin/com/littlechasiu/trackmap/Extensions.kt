@@ -65,6 +65,6 @@ val Train.sendable
     CreateTrain(
       id = id,
       name = name.string,
-      owner = ownedBy?.displayName?.string,
+      owner = null,
       cars = carriages.map { it.sendable }.toList(),
     )
