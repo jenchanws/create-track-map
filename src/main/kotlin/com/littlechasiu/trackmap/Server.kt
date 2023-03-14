@@ -15,7 +15,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.Writer
 
-class Server() {
+class Server {
   @OptIn(ExperimentalSerializationApi::class)
   val jsonPretty = Json {
     prettyPrint = true
@@ -50,11 +50,8 @@ class Server() {
     flush()
   }
 
-  private suspend inline fun <reified T> ApplicationCall.respondJSON(
-    obj: T,
-    pretty: Boolean = false
-  ) {
-    if (pretty)
+  private suspend inline fun <reified T> ApplicationCall.respondJSON(obj: T) {
+    if (request.queryParameters.contains("pretty"))
       respondText(jsonPretty.encodeToString(obj))
     else
       respondText(Json.encodeToString(obj))
@@ -70,9 +67,6 @@ class Server() {
     }
   }
 
-  private val ApplicationCall.pretty
-    get() = request.queryParameters.contains("pretty")
-
   private fun Application.module() {
     routing {
       static("/") {
@@ -84,34 +78,20 @@ class Server() {
         }
       }
 
-      get("/static/network") {
-        call.respondJSON(TrackMap.network, call.pretty)
-      }
-
-      get("/static/signals") {
-        call.respondJSON(TrackMap.signals, call.pretty)
-      }
-
-      get("/static/blocks") {
-        call.respondJSON(TrackMap.blocks, call.pretty)
-      }
-
-      get("/static/trains") {
-        call.respondJSON(TrackMap.trains, call.pretty)
-      }
+      get("/static/network") { call.respondJSON(TrackMap.network) }
+      get("/static/signals") { call.respondJSON(TrackMap.signals) }
+      get("/static/blocks") { call.respondJSON(TrackMap.blocks) }
+      get("/static/trains") { call.respondJSON(TrackMap.trains) }
 
       get("/rt/network") {
         call.respondSSE(TrackMap.network, TrackMap.networkFlow)
       }
-
       get("/rt/signals") {
         call.respondSSE(TrackMap.signals, TrackMap.signalFlow)
       }
-
       get("/rt/blocks") {
         call.respondSSE(TrackMap.blocks, TrackMap.blockFlow)
       }
-
       get("/rt/trains") {
         call.respondSSE(TrackMap.trains, TrackMap.trainFlow)
       }
