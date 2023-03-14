@@ -1,7 +1,5 @@
 # Create Track Map
 
-_This mod is a work in progress!_
-
 ![Mod version](https://img.shields.io/modrinth/v/gxoNIjg6)
 ![Minecraft versions](https://img.shields.io/modrinth/game-versions/gxoNIjg6)
 ![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
