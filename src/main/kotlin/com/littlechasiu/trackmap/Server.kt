@@ -77,8 +77,7 @@ class Server() {
     routing {
       static("/") {
         staticBasePackage = "assets"
-        resource("index.html")
-        default("index.html")
+        defaultResource("index.html")
       }
 
       get("/static/network") {
