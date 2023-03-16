@@ -100,6 +100,7 @@ tasks {
         it.name.contains("ktor")
           || it.name.contains("kotlinx")
           || it.name.contains("netty")
+          || it.name.contains("kotlin-css")
       }.map { zipTree(it) }
     }) {
       duplicatesStrategy = DuplicatesStrategy.INCLUDE
