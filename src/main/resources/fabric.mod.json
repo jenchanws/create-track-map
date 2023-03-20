@@ -6,7 +6,7 @@
   "description": "A map of Create train tracks",
   "authors": ["LittleChaSiu"],
   "license": "MIT",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
     "main": [
       {
