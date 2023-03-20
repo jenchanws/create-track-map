@@ -26,12 +26,18 @@ class Server {
     prettyPrintIndent = "  "
   }
 
+  var enable: Boolean = true
   var port: Int = 3876
   var mapStyle: MapStyle = MapStyle()
 
   private var server: NettyApplicationEngine? = null
 
   fun start() {
+    if (!enable) {
+      TrackMap.LOGGER.info("Create Track Map server not starting since 'enable' is set to false")
+      return
+    }
+
     server = embeddedServer(Netty, port) {
       install(CORS) {
         anyHost()
@@ -43,6 +49,10 @@ class Server {
   }
 
   fun stop() {
+    if (!enable) {
+      return
+    }
+
     TrackMap.LOGGER.info("Stopping Create Track Map server")
     server?.stop(1000, 5000)
     server = null

@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignalColors(
+data class SignalColors @OptIn(ExperimentalSerializationApi::class) constructor(
   @EncodeDefault
   val green: String = "#71db51",
   @EncodeDefault
@@ -18,7 +18,7 @@ data class SignalColors(
 )
 
 @Serializable
-data class TrackColors(
+data class TrackColors @OptIn(ExperimentalSerializationApi::class) constructor(
   @EncodeDefault
   val occupied: String = "red",
   @EncodeDefault
@@ -34,7 +34,7 @@ data class IconColors(
 )
 
 @Serializable
-data class Colors(
+data class Colors @OptIn(ExperimentalSerializationApi::class) constructor(
   @EncodeDefault
   val background: String = "#888",
   @EncodeDefault
@@ -50,7 +50,7 @@ data class Colors(
 )
 
 @Serializable
-data class MapStyle(
+data class MapStyle @OptIn(ExperimentalSerializationApi::class) constructor(
   @EncodeDefault
   val font: String = "ui-monospace, \"JetBrains Mono\", monospace",
   @EncodeDefault
@@ -59,6 +59,9 @@ data class MapStyle(
 
 @Serializable
 data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
+  @EncodeDefault
+  val enable: Boolean = true,
+
   @SerialName("watch_interval_seconds")
   @EncodeDefault
   val watchIntervalSeconds: Double = 0.5,

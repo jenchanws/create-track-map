@@ -22,6 +22,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TrackWatcher() {
+  var enable: Boolean = true
   var watchInterval: Duration = 0.5.seconds
   private var stopping: Boolean = false
   private var thread: Thread? = null
@@ -31,6 +32,10 @@ class TrackWatcher() {
   }
 
   fun start() {
+    if (!enable) {
+      return
+    }
+
     thread = thread(name = "TrackMap watcher") {
       runBlocking {
         launch {
@@ -41,6 +46,10 @@ class TrackWatcher() {
   }
 
   fun stop() {
+    if (!enable) {
+      return
+    }
+
     stopping = true
     thread?.join()
     stopping = false
