@@ -14,11 +14,11 @@ including all tracks, signals, stations, and trains. The signals and
 trains are updated in (practically) real time.
 
 ![Example track 
-map](https://cdn.modrinth.com/data/gxoNIjg6/images/42ed31bbb88df37f393a6f8a284cc26eb9c64886.png)
+map](https://cdn.modrinth.com/data/gxoNIjg6/images/ca8d99140695e1b8ac7a08f7a19d027ee92ebc76.gif)
 
 ### Usage
 
-CTM is a _server side_ only mod. It runs a web server, on port 3876 by default, that provides the following API:
+CTM is intended to be a server side mod, but can also run in single-player worlds and LAN servers. It runs a web server, on port 3876 by default, that provides the following API:
 
 - `/api/network`, `/api/network.rt`: List of all track pieces and train stations
 - `/api/signals`, `/api/signals.rt`: List of all train signals, including their states
@@ -42,6 +42,9 @@ The following options are available:
 
 ```js
 {
+  // Whether to actually start the watcher and the server.
+  "enable": false,
+
   // How long to wait between track data updates.
   "watch_interval_seconds": 0.5,
   // The port the internal web server listens on.
