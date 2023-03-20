@@ -158,7 +158,7 @@ class TrackWatcher() {
     private val internal: SignalEdgeGroup,
   ) {
     private val id: UUID get() = internal.id
-    private val occupied: Boolean get() = internal.trains.isNotEmpty()
+    private val occupied: Boolean get() = RR.trains.values.any { it.occupiedSignalBlocks.containsKey(id) }
     private val reserved: Boolean get() = RR.trains.values.any { it.reservedSignalBlocks.contains(id) }
 
     val segments = mutableListOf<Track>()

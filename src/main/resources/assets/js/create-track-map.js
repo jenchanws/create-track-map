@@ -167,7 +167,7 @@ blockStatusStream.onmessage = (e) => {
           {
             className:
               "track " +
-              (block.occupied ? "occupied" : block.reserved ? "reserved" : ""),
+              (block.reserved ? "reserved" : block.occupied ? "occupied" : ""),
             interactive: false,
             pane: "signal-blocks",
           }
@@ -176,7 +176,7 @@ blockStatusStream.onmessage = (e) => {
         L.polyline([xz(path[0]), xz(path[1])], {
           className:
             "track " +
-            (block.occupied ? "occupied" : block.reserved ? "reserved" : ""),
+            (block.reserved ? "reserved" : block.occupied ? "occupied" : ""),
           interactive: false,
           pane: "signal-blocks",
         }).addTo(blockLayer)
