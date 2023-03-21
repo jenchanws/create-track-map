@@ -101,6 +101,7 @@ class Server {
         static("assets") {
           static("css") { resources("css") }
           static("js") { resources("js") }
+          static("icons") { resources("icons") }
         }
       }
 
