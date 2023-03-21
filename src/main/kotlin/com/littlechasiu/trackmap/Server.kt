@@ -10,10 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.css.Color
-import kotlinx.css.CssBuilder
-import kotlinx.css.CssValue
-import kotlinx.css.quoted
+import kotlinx.css.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,7 +25,8 @@ class Server {
 
   var enable: Boolean = true
   var port: Int = 3876
-  var mapStyle: MapStyle = MapStyle()
+  var mapStyle = MapStyle()
+  var mapView = MapView()
 
   private var server: NettyApplicationEngine? = null
 
@@ -92,6 +90,9 @@ class Server {
     }
   }
 
+  private val mapConfig: MapConfig get() =
+    MapConfig(mapView)
+
   private fun Application.module() {
     routing {
       static("/") {
@@ -102,6 +103,8 @@ class Server {
           static("js") { resources("js") }
         }
       }
+
+      get("/api/config.json") { call.respondJSON(mapConfig) }
 
       get("/api/style.css") {
         call.respondCSS {

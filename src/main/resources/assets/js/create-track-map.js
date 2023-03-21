@@ -12,10 +12,31 @@ let xz = (x, z) => {
 
 let map = L.map("map", {
   crs: L.CRS.Minecraft,
-  minZoom: 1,
-  maxZoom: 4,
-  zoomControl: false,
-}).setView(xz(-300, 400), 3)
+  zoomControl: true,
+})
+
+fetch("api/config.json")
+  .then((resp) => resp.json())
+  .then((cfg) => {
+    const { view } = cfg
+    const {
+      initial_position,
+      initial_zoom,
+      max_zoom,
+      min_zoom,
+      zoom_controls,
+    } = view
+
+    map.options.minZoom = min_zoom
+    map.options.maxZoom = max_zoom
+
+    const { x: initialX, z: initialZ } = initial_position
+    map.setView([initialZ, initialX], initial_zoom)
+
+    if (!zoom_controls) {
+      map.zoomControl.remove()
+    }
+  })
 
 const signalIcon = L.divIcon({
   html: `
@@ -87,10 +108,10 @@ let signalLayer = L.layerGroup([], { pane: "signals" }).addTo(map)
 let blockLayer = L.layerGroup([], { pane: "signal-blocks" }).addTo(map)
 let trainLayer = L.layerGroup([], { pane: "trains" }).addTo(map)
 
-const networkStream = new EventSource(`api/network.rt`)
-const blockStatusStream = new EventSource(`api/blocks.rt`)
-const signalStatusStream = new EventSource(`api/signals.rt`)
-const trainStatusStream = new EventSource(`api/trains.rt`)
+const networkStream = new EventSource("api/network.rt")
+const blockStatusStream = new EventSource("api/blocks.rt")
+const signalStatusStream = new EventSource("api/signals.rt")
+const trainStatusStream = new EventSource("api/trains.rt")
 
 networkStream.onmessage = (e) => {
   let { edges, stations } = JSON.parse(e.data)

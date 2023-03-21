@@ -58,6 +58,39 @@ data class MapStyle @OptIn(ExperimentalSerializationApi::class) constructor(
 )
 
 @Serializable
+data class Coordinates(
+  val x: Int,
+  val z: Int,
+)
+
+@Serializable
+data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
+  @SerialName("initial_position")
+  @EncodeDefault
+  val initialPosition: Coordinates = Coordinates(0, 0),
+  @SerialName("initial_zoom")
+  @EncodeDefault
+  val initialZoom: Int = 3,
+
+  @SerialName("min_zoom")
+  @EncodeDefault
+  val minZoom: Int = 0,
+  @SerialName("max_zoom")
+  @EncodeDefault
+  val maxZoom: Int = 4,
+
+  @SerialName("zoom_controls")
+  @EncodeDefault
+  val zoomControls: Boolean = false,
+)
+
+@Serializable
+data class MapConfig @OptIn(ExperimentalSerializationApi::class) constructor(
+  @EncodeDefault
+  val view: MapView,
+)
+
+@Serializable
 data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
   @EncodeDefault
   val enable: Boolean = true,
@@ -72,4 +105,7 @@ data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
   @SerialName("map_style")
   @EncodeDefault
   val mapStyle: MapStyle = MapStyle(),
+  @SerialName("map_view")
+  @EncodeDefault
+  val mapView: MapView = MapView(),
 )
