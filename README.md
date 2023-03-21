@@ -26,7 +26,8 @@ CTM is intended to be a server side mod, but can also run in single-player world
 - `/api/blocks`, `/api/blocks.rt`: List of all signal control blocks, and whether they are occupied or reserved by a train
 - `/api/trains`, `/api/trains.rt`: List of all assembled trains, including their names and
   positions
-- `/api/style.css`: CSS style sheet generated from configured colors and fonts (Coming Soon™)
+- `/api/style.css`: CSS style sheet generated from configured colors and fonts
+- `/api/config.json`: Map configuration
 
 The `.rt` versions update in real time with Server-Sent Events (SSE). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
 
@@ -78,6 +79,21 @@ The following options are available:
       },
       "train": "cyan"
     }
+  },
+
+  "map_view": {
+    "initial_position": { "x": 0, "z": 0 },
+
+    // Zoom levels must be integers, but may be negative.
+    // Each zoom level is twice as big as the previous.
+    // 0 is a decent minimum but may be impractical for large networks.
+    // 3 is the sensible default for viewing double-tracked networks.
+    "initial_zoom": 3,
+    "min_zoom": 0,
+    "max_zoom": 4,
+
+    // Whether a zoom control should be visible on the screen.
+    "zoom_controls": true
   }
 }
 ```
