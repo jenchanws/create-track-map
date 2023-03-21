@@ -5,16 +5,18 @@
 ![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
 
 ![Requires Fabric 
-API](https://cdn.sammdot.ca/img/modbadges/requires-fabric-api.png)
+API](https://cdn.sammdot.ca/img/badges/fabric-api.svg)
 ![Requires Fabric 
-Kotlin](https://cdn.sammdot.ca/img/modbadges/requires-fabric-kotlin.png)
+Kotlin](https://cdn.sammdot.ca/img/badges/fabric-kotlin.svg)
+[![Available on Modrinth](https://cdn.sammdot.ca/img/badges/modrinth.svg)](https://modrinth.com/mod/create-track-map)
+[![Find me on Discord](https://cdn.sammdot.ca/img/badges/discord.svg)](https://smp.littlechasiu.com/discord)
 
 A Fabric mod that displays a track map of Create trains in your world,
 including all tracks, signals, stations, and trains. The signals and
 trains are updated in (practically) real time.
 
 ![Example track 
-map](https://cdn.modrinth.com/data/gxoNIjg6/images/ca8d99140695e1b8ac7a08f7a19d027ee92ebc76.gif)
+map](https://cdn.modrinth.com/data/gxoNIjg6/images/8aa58af4ca9cc459a84ce492770a92e358cd2714.gif)
 
 ### Usage
 
