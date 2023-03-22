@@ -1,5 +1,8 @@
 package com.littlechasiu.trackmap
 
+import com.littlechasiu.trackmap.model.MapConfig
+import com.littlechasiu.trackmap.model.MapStyle
+import com.littlechasiu.trackmap.model.MapView
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -90,7 +93,8 @@ class Server {
     }
   }
 
-  private val mapConfig: MapConfig get() =
+  private val mapConfig: MapConfig
+    get() =
     MapConfig(mapView)
 
   private fun Application.module() {

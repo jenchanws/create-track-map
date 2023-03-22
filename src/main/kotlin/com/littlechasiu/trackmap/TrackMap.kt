@@ -1,5 +1,6 @@
 package com.littlechasiu.trackmap
 
+import com.littlechasiu.trackmap.model.Config
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

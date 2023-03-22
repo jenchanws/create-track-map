@@ -1,4 +1,4 @@
-package com.littlechasiu.trackmap
+package com.littlechasiu.trackmap.model
 
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
