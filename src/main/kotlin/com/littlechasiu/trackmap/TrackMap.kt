@@ -35,8 +35,8 @@ object TrackMap {
   val LOGGER: Logger = LogManager.getLogger(MODID)
 
   private var config = Config()
-  private var watcher = TrackWatcher()
-  private var server = Server()
+  val watcher = TrackWatcher()
+  private val server = Server()
 
   val network get() = watcher.network
   val signals get() = watcher.signalStatus

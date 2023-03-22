@@ -79,7 +79,7 @@ class TrackWatcher() {
   ) {
     private val id: UUID get() = internal.id
     private val name: String get() = internal.name
-    private val dimension get() = Dimension.from(edge.node1.location.dimension)!!
+    private val dimension get() = edge.node1.location.dimension.string
     private val location get() = internal.locationOn(edge)
     private val angle get() = internal.angleOn(edge)
     private val assembling get() = internal.assembling
@@ -107,7 +107,7 @@ class TrackWatcher() {
     private val edge: TrackEdge,
   ) {
     private val id: UUID get() = internal.id
-    private val dimension get() = Dimension.from(edge.node1.location.dimension)!!
+    private val dimension get() = edge.node1.location.dimension.string
     private val location: Vec3 get() = internal.locationOn(edge)
     private val forwardAngle get() = internal.angleOn(edge)
     private val reverseAngle get() = forwardAngle + 180
@@ -171,6 +171,7 @@ class TrackWatcher() {
     private val reserved: Boolean get() = RR.trains.values.any { it.reservedSignalBlocks.contains(id) }
 
     val segments = mutableListOf<Track>()
+    val portals = mutableSetOf<Portal>()
 
     override fun equals(other: Any?) =
       other != null && javaClass == other.javaClass &&
@@ -194,13 +195,17 @@ class TrackWatcher() {
   private var signals = mutableSetOf<CreateSignal>()
   private var stations = mutableSetOf<CreateStation>()
   private var trains = mutableSetOf<Train>()
-  private var blocks = mutableSetOf<CreateSignalBlock>()
+  private var blocks = mutableMapOf<UUID, CreateSignalBlock>()
+
+  fun portalsInBlock(block: UUID): Collection<Portal> =
+    blocks[block]?.portals ?: listOf()
 
   val network
     get() =
       Network(
         nodes = nodes.map { it.sendable }.toList(),
-        edges = edges.map { it.sendable }.toList(),
+        edges = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
+        portals = edges.map { it.sendable }.filterIsInstance<Portal>().toList(),
         stations = stations.map { it.sendable }.toList(),
       )
 
@@ -213,7 +218,7 @@ class TrackWatcher() {
   val blockStatus
     get() =
       BlockStatus(
-        blocks = blocks.map { it.sendable }.toList()
+        blocks = blocks.values.map { it.sendable }.toList()
       )
 
   val trainStatus
@@ -263,7 +268,11 @@ class TrackWatcher() {
 
     RR.trackNetworks.forEach { (_, net) ->
       networkEdges[net]?.forEach { edge ->
-        if (!edge.isInterDimensional) {
+        if (edge.isInterDimensional) {
+          (edge.sendable as? Portal)?.let { portal ->
+            thisBlocks[edge.edgeData.getEffectiveEdgeGroupId(net)]?.portals?.add(portal)
+          }
+        } else {
           if (edge.edgeData.hasSignalBoundaries()) {
             val signals =
               edge.edgeData.points.filterIsInstance<SignalBoundary>()
@@ -323,8 +332,8 @@ class TrackWatcher() {
         }
       }
     }
-    blocks.removeAll { true }
-    blocks.addAll(thisBlocks.values)
+    blocks.clear()
+    blocks.putAll(thisBlocks)
 
     // Trains
     trains.replaceWith(RR.trains.values)

@@ -56,13 +56,13 @@ body {
   fill: var(--portal-outline);
 }
 
-.signal-icon[data-color="green"] .light {
+.signal-icon.green .light {
   fill: var(--signal-green);
 }
-.signal-icon[data-color="yellow"] .light {
+.signal-icon.yellow .light {
   fill: var(--signal-yellow);
 }
-.signal-icon[data-color="red"] .light {
+.signal-icon.red .light {
   fill: var(--signal-red);
 }
 .signal-icon .outline {

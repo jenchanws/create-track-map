@@ -8,8 +8,6 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import net.minecraft.resources.ResourceKey
-import net.minecraft.world.level.Level
 import java.util.*
 
 object UUIDSerializer : KSerializer<UUID> {
@@ -25,21 +23,6 @@ object UUIDSerializer : KSerializer<UUID> {
   }
 }
 
-enum class Dimension {
-  OVERWORLD,
-  NETHER,
-  END;
-
-  companion object {
-    fun from(loc: ResourceKey<Level>) = when (loc.location().path) {
-      "overworld" -> OVERWORLD
-      "the_nether" -> NETHER
-      "the_end" -> END
-      else -> null
-    }
-  }
-}
-
 @Serializable
 data class Point(
   val x: Double,
@@ -50,7 +33,7 @@ data class Point(
 @Serializable
 data class Node(
   val id: Int,
-  val dimension: Dimension,
+  val dimension: String,
   val location: Point,
 )
 
@@ -66,8 +49,20 @@ data class Path(
 data class Edge(
   val fromNode: Int,
   val toNode: Int,
-  val interdimensional: Boolean,
+  val dimension: String,
   val path: List<Point>?,
+)
+
+@Serializable
+data class DimensionLocation(
+  val dimension: String,
+  val location: Point
+)
+
+@Serializable
+data class Portal(
+  val from: DimensionLocation,
+  val to: DimensionLocation,
 )
 
 @Serializable
@@ -75,7 +70,7 @@ data class Station(
   @Serializable(with = UUIDSerializer::class)
   val id: UUID,
   val name: String,
-  val dimension: Dimension,
+  val dimension: String,
   val location: Point,
   val angle: Double,
   val assembling: Boolean,
@@ -94,6 +89,7 @@ data class SignalSide(
 data class Network(
   val nodes: List<Node>,
   val edges: List<Edge>,
+  val portals: List<Portal>,
   val stations: List<Station>,
 )
 
@@ -101,7 +97,7 @@ data class Network(
 data class Signal(
   @Serializable(with = UUIDSerializer::class)
   val id: UUID,
-  val dimension: Dimension,
+  val dimension: String,
   val location: Point,
   val forward: SignalSide?,
   val reverse: SignalSide?,
@@ -129,8 +125,9 @@ data class BlockStatus(
 @Serializable
 data class TrainCar(
   val id: Int,
-  val leading: Point,
-  val trailing: Point,
+  val leading: DimensionLocation,
+  val portal: Portal? = null,
+  val trailing: DimensionLocation,
 )
 
 @Serializable

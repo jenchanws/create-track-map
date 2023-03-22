@@ -1,13 +1,15 @@
 package com.littlechasiu.trackmap
 
 import com.littlechasiu.trackmap.model.*
-import com.simibubi.create.content.logistics.trains.BezierConnection
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.TrackNode
 import com.simibubi.create.content.logistics.trains.TrackNodeLocation
 import com.simibubi.create.content.logistics.trains.entity.Carriage
 import com.simibubi.create.content.logistics.trains.entity.Train
+import com.simibubi.create.content.logistics.trains.entity.TravellingPoint
 import com.simibubi.create.foundation.utility.Couple
+import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 
 fun <T> MutableSet<T>.replaceWith(other: Collection<T>) {
@@ -22,38 +24,63 @@ val Vec3.sendable: Point
   get() =
     Point(x = x, y = y, z = z)
 
+val ResourceKey<Level>.string: String
+  get() {
+    val loc = location()
+    return "${loc.namespace}:${loc.path}"
+  }
+
 val TrackNodeLocation.sendable get() = location.sendable
 
 val TrackNode.sendable
   get() =
     Node(
       id = netId,
-      dimension = Dimension.from(location.dimension)!!,
+      dimension = location.dimension.string,
       location = location.sendable,
     )
-
-val BezierConnection.sendable get() = path.sendable
 
 val TrackEdge.path: Track
   get() =
     if (isTurn) turn.path
     else Line(node1.location.location, node2.location.location)
 
+val TrackNode.dimensionLocation: DimensionLocation get() =
+  DimensionLocation(location.dimension.string, location.sendable)
+
 val TrackEdge.sendable
   get() =
-    Edge(
-      fromNode = node1.netId,
-      toNode = node2.netId,
-      interdimensional = isInterDimensional,
-      path = path.sendable
+    if (isInterDimensional)
+      Portal(
+        from = node1.dimensionLocation,
+        to = node2.dimensionLocation)
+    else
+      Edge(
+        fromNode = node1.netId,
+        toNode = node2.netId,
+        dimension = node1.location.dimension.string,
+        path = path.sendable
+      )
+
+val TravellingPoint.sendable
+  get() =
+    DimensionLocation(
+      dimension = edge.node1.location.dimension.string,
+      location = getPosition().sendable,
     )
 
 val Carriage.sendable
   get() =
     TrainCar(
       id = id,
-      leading = this.leadingPoint.getPosition().sendable,
-      trailing = this.trailingPoint.getPosition().sendable,
+      leading = leadingPoint.sendable,
+      trailing = trailingPoint.sendable,
+      portal = this.train.occupiedSignalBlocks.keys.map {
+        TrackMap.watcher.portalsInBlock(it)
+      }.flatten().firstOrNull {
+        it.from.dimension == leadingPoint.node1.location.dimension.string &&
+          it.to.dimension == trailingPoint.node1.location.dimension.string
+      },
     )
 
 val Train.sendable

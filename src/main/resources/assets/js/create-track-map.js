@@ -148,8 +148,9 @@ fetch("api/config.json")
     L.coordsControl().addTo(map)
   })
 
-const signalIcon = L.divIcon({
-  html: `
+const signalIcon = (color) =>
+  L.divIcon({
+    html: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
@@ -159,10 +160,10 @@ const signalIcon = L.divIcon({
       <path class="frame" d="M44 0c11.046 0 20 8.954 20 20 0 10.37-7.893 18.897-17.999 19.901L46 60h18v4H24v-4h18V39.901C31.893 38.898 24 30.371 24 20 24 8.954 32.954 0 44 0Zm0 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16S52.837 4 44 4Z"/>
       <path class="light" d="M44 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16S52.837 4 44 4Z"/>
     </svg>`,
-  className: "signal-icon",
-  iconSize: [16, 16],
-  iconAnchor: [2, 16],
-})
+    className: `signal-icon ${color}`,
+    iconSize: [16, 16],
+    iconAnchor: [2, 16],
+  })
 
 const stationIcon = L.divIcon({
   html: `
@@ -224,28 +225,23 @@ const signalStatusStream = new EventSource("api/signals.rt")
 const trainStatusStream = new EventSource("api/trains.rt")
 
 networkStream.onmessage = (e) => {
-  let { edges, stations } = JSON.parse(e.data)
+  let { edges, portals, stations } = JSON.parse(e.data)
 
   edgeLayer.clearLayers()
   edges.forEach((edge) => {
-    if (edge.path !== null && !edge.interdimensional) {
-      const path = edge.path
-      if (path.length === 4) {
-        L.curve(
-          ["M", xz(path[0]), "C", xz(path[1]), xz(path[2]), xz(path[3])],
-          {
-            className: "track",
-            interactive: false,
-            pane: "tracks",
-          }
-        ).addTo(edgeLayer)
-      } else if (path.length === 2) {
-        L.polyline([xz(path[0]), xz(path[1])], {
-          className: "track",
-          interactive: false,
-          pane: "tracks",
-        }).addTo(edgeLayer)
-      }
+    const path = edge.path
+    if (path.length === 4) {
+      L.curve(["M", xz(path[0]), "C", xz(path[1]), xz(path[2]), xz(path[3])], {
+        className: "track",
+        interactive: false,
+        pane: "tracks",
+      }).addTo(edgeLayer)
+    } else if (path.length === 2) {
+      L.polyline([xz(path[0]), xz(path[1])], {
+        className: "track",
+        interactive: false,
+        pane: "tracks",
+      }).addTo(edgeLayer)
     }
   })
 
@@ -265,21 +261,19 @@ networkStream.onmessage = (e) => {
       .addTo(stationLayer)
   })
 
-  edges.forEach((edge) => {
-    if (edge.interdimensional) {
-      L.marker(xz(edge.path[0]), {
-        icon: portalIcon,
-        pane: "stations",
-      })
-        .on("click", (e) => map.panTo(xz(edge.path[1])))
-        .addTo(portalLayer)
-      L.marker(xz(edge.path[1]), {
-        icon: portalIcon,
-        pane: "stations",
-      })
-        .on("click", (e) => map.panTo(xz(edge.path[0])))
-        .addTo(portalLayer)
-    }
+  portals.forEach((portal) => {
+    L.marker(xz(portal.from.location), {
+      icon: portalIcon,
+      pane: "stations",
+    })
+      .on("click", (e) => map.panTo(xz(portal.to.location)))
+      .addTo(portalLayer)
+    L.marker(xz(portal.to.location), {
+      icon: portalIcon,
+      pane: "stations",
+    })
+      .on("click", (e) => map.panTo(xz(portal.from.location)))
+      .addTo(portalLayer)
   })
 }
 
@@ -323,23 +317,19 @@ signalStatusStream.onmessage = (e) => {
   signals.forEach((sig) => {
     if (!!sig.forward) {
       let marker = L.marker(xz(sig.location), {
-        icon: signalIcon,
+        icon: signalIcon(sig.forward.state.toLowerCase()),
         rotationAngle: sig.forward.angle,
         interactive: false,
         pane: "signals",
       }).addTo(signalLayer)
-
-      marker._icon.dataset.color = sig.forward.state.toLowerCase()
     }
     if (!!sig.reverse) {
       let marker = L.marker(xz(sig.location), {
-        icon: signalIcon,
+        icon: signalIcon(sig.reverse.state.toLowerCase()),
         rotationAngle: sig.reverse.angle,
         interactive: false,
         pane: "signals",
       }).addTo(signalLayer)
-
-      marker._icon.dataset.color = sig.reverse.state.toLowerCase()
     }
   })
 }
@@ -350,24 +340,33 @@ trainStatusStream.onmessage = (e) => {
   trainLayer.clearLayers()
   trains.forEach((train) => {
     train.cars.forEach((car, i) => {
-      L.polyline([xz(car.leading), xz(car.trailing)], {
-        weight: 12,
-        lineCap: "square",
-        className: "train",
-        pane: "trains",
-      })
-        .bindTooltip(
-          train.cars.length === 1
-            ? train.name
-            : `${train.name} <span class="car-number">${i + 1}</span>`,
-          {
-            className: "train-name",
-            direction: "right",
-            offset: L.point(12, 0),
-            opacity: 0.7,
-          }
-        )
-        .addTo(trainLayer)
+      let parts = car.portal
+        ? [
+            [xz(car.leading.location), xz(car.portal.from.location)],
+            [xz(car.portal.to.location), xz(car.trailing.location)],
+          ]
+        : [[xz(car.leading.location), xz(car.trailing.location)]]
+
+      parts.map((part) =>
+        L.polyline(part, {
+          weight: 12,
+          lineCap: "square",
+          className: "train",
+          pane: "trains",
+        })
+          .bindTooltip(
+            train.cars.length === 1
+              ? train.name
+              : `${train.name} <span class="car-number">${i + 1}</span>`,
+            {
+              className: "train-name",
+              direction: "right",
+              offset: L.point(12, 0),
+              opacity: 0.7,
+            }
+          )
+          .addTo(trainLayer)
+      )
     })
   })
 }
