@@ -31,13 +31,6 @@ data class Point(
 )
 
 @Serializable
-data class Node(
-  val id: Int,
-  val dimension: String,
-  val location: Point,
-)
-
-@Serializable
 data class Path(
   val start: Point,
   val firstControlPoint: Point,
@@ -47,10 +40,8 @@ data class Path(
 
 @Serializable
 data class Edge(
-  val fromNode: Int,
-  val toNode: Int,
   val dimension: String,
-  val path: List<Point>?,
+  val path: List<Point>,
 )
 
 @Serializable
@@ -87,8 +78,7 @@ data class SignalSide(
 
 @Serializable
 data class Network(
-  val nodes: List<Node>,
-  val edges: List<Edge>,
+  val tracks: List<Edge>,
   val portals: List<Portal>,
   val stations: List<Station>,
 )
@@ -114,7 +104,7 @@ data class Block(
   val id: UUID,
   val occupied: Boolean,
   val reserved: Boolean,
-  val segments: List<List<Point>>,
+  val segments: List<Edge>,
 )
 
 @Serializable

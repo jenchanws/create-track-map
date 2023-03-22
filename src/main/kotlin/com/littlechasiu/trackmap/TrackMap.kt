@@ -77,6 +77,7 @@ object TrackMap {
     server.port = config.serverPort
     server.mapStyle = config.mapStyle
     server.mapView = config.mapView
+    server.dimensions = config.dimensions
   }
 
   private fun reload() {

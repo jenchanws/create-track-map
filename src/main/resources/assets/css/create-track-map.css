@@ -101,6 +101,40 @@ body {
   padding: 0 5px;
 }
 
+.leaflet-control-layers:not(.leaflet-control-layers-expanded) .leaflet-control-layers-list {
+  display: none;
+}
+.leaflet-control-layers-toggle {
+  background-image: url(../icons/layers.svg);
+  background-size: 32px 32px;
+}
+.leaflet-control-layers-expanded {
+  padding: 6px;
+}
+.leaflet-control-layers label {
+  font-family: var(--ui-font);
+  font-size: 14px;
+}
+.leaflet-control-layers input[type="radio"] {
+  display: none;
+}
+.leaflet-control-layers input[type="radio"] + span {
+  display: inline-block;
+  width: 100%;
+  border-radius: 2px;
+  padding: 0 5px;
+  margin-top: 2px;
+}
+.leaflet-control-layers input[type="radio"] + span:hover {
+  cursor: pointer;
+  background-color: #ccc;
+}
+.leaflet-control-layers input[type="radio"]:checked + span {
+  background-color: #888;
+  color: white;
+  font-weight: bold;
+}
+
 .leaflet-top {
   top: 12px;
 }

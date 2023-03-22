@@ -84,6 +84,7 @@ The following options are available:
   },
 
   "map_view": {
+    "initial_dimension": "minecraft:overworld",
     "initial_position": { "x": 0, "z": 0 },
 
     // Zoom levels must be integers, but may be negative.
@@ -96,6 +97,20 @@ The following options are available:
 
     // Whether a zoom control should be visible on the screen.
     "zoom_controls": true
+  },
+
+  "dimensions": {
+    // Dimension names must be namespaced.
+    "minecraft:overworld": {
+      // Label that shows up in the layer switcher.
+      "label": "Overworld"
+    },
+    "minecraft:the_nether": {
+      "label": "Nether"
+    },
+    "minecraft:the_end": {
+      "label": "End"
+    }
   }
 }
 ```

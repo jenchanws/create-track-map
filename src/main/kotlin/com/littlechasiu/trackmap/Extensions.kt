@@ -32,21 +32,17 @@ val ResourceKey<Level>.string: String
 
 val TrackNodeLocation.sendable get() = location.sendable
 
-val TrackNode.sendable
-  get() =
-    Node(
-      id = netId,
-      dimension = location.dimension.string,
-      location = location.sendable,
-    )
-
 val TrackEdge.path: Track
   get() =
-    if (isTurn) turn.path
-    else Line(node1.location.location, node2.location.location)
+    if (isTurn) BezierCurve.from(turn, node1.location.dimension.string)
+    else Line(
+      node1.location.dimension.string,
+      node1.location.location, node2.location.location
+    )
 
-val TrackNode.dimensionLocation: DimensionLocation get() =
-  DimensionLocation(location.dimension.string, location.sendable)
+val TrackNode.dimensionLocation: DimensionLocation
+  get() =
+    DimensionLocation(location.dimension.string, location.sendable)
 
 val TrackEdge.sendable
   get() =
@@ -55,12 +51,7 @@ val TrackEdge.sendable
         from = node1.dimensionLocation,
         to = node2.dimensionLocation)
     else
-      Edge(
-        fromNode = node1.netId,
-        toNode = node2.netId,
-        dimension = node1.location.dimension.string,
-        path = path.sendable
-      )
+      path.sendable
 
 val TravellingPoint.sendable
   get() =

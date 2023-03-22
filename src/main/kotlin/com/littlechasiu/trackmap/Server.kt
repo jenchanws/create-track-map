@@ -1,5 +1,6 @@
 package com.littlechasiu.trackmap
 
+import com.littlechasiu.trackmap.model.DimensionConfig
 import com.littlechasiu.trackmap.model.MapConfig
 import com.littlechasiu.trackmap.model.MapStyle
 import com.littlechasiu.trackmap.model.MapView
@@ -30,6 +31,11 @@ class Server {
   var port: Int = 3876
   var mapStyle = MapStyle()
   var mapView = MapView()
+  var dimensions = mapOf(
+    "minecraft:overworld" to DimensionConfig(label = "Overworld"),
+    "minecraft:the_nether" to DimensionConfig(label = "Nether"),
+    "minecraft:the_end" to DimensionConfig(label = "End"),
+  )
 
   private var server: NettyApplicationEngine? = null
 
@@ -95,7 +101,7 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-    MapConfig(mapView)
+    MapConfig(mapView, dimensions)
 
   private fun Application.module() {
     routing {

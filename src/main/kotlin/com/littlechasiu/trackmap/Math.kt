@@ -1,6 +1,6 @@
 package com.littlechasiu.trackmap
 
-import com.littlechasiu.trackmap.model.Point
+import com.littlechasiu.trackmap.model.Edge
 import com.simibubi.create.content.logistics.trains.BezierConnection
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.TrackEdgePoint
@@ -18,24 +18,28 @@ operator fun Vec3.unaryMinus() = this * -1.0
 
 interface Track {
   fun divideAt(position: Double): Pair<Track, Track>
-  val sendable: List<Point>
+  val sendable: Edge
 }
 
 data class Line(
+  val dimension: String,
   val start: Vec3,
   val end: Vec3,
-): Track {
-  override val sendable: List<Point>
-    get() = listOf(
-      start.sendable,
-      end.sendable,
+) : Track {
+  override val sendable: Edge
+    get() = Edge(
+      dimension,
+      listOf(
+        start.sendable,
+        end.sendable,
+      )
     )
 
   override fun divideAt(position: Double): Pair<Track, Track> {
     val point = start.lerp(end, position)
     return Pair(
-      Line(start, point),
-      Line(point, end),
+      Line(dimension, start, point),
+      Line(dimension, point, end),
     )
   }
 }
@@ -49,17 +53,21 @@ fun List<Vec3>.multiLerp(position: Double): List<Vec3> {
 }
 
 data class BezierCurve(
+  val dimension: String,
   val start: Vec3,
   val controlPoint1: Vec3,
   val controlPoint2: Vec3,
   val end: Vec3,
 ): Track {
-  override val sendable: List<Point>
-    get() = listOf(
-      start.sendable,
-      controlPoint1.sendable,
-      controlPoint2.sendable,
-      end.sendable,
+  override val sendable: Edge
+    get() = Edge(
+      dimension,
+      listOf(
+        start.sendable,
+        controlPoint1.sendable,
+        controlPoint2.sendable,
+        end.sendable,
+      )
     )
 
   private val points get() = listOf(start, controlPoint1, controlPoint2, end)
@@ -76,23 +84,25 @@ data class BezierCurve(
     val cp22 = points1[2]
 
     return Pair(
-      BezierCurve(start, cp11, cp12, midpoint),
-      BezierCurve(midpoint, cp21, cp22, end),
+      BezierCurve(dimension, start, cp11, cp12, midpoint),
+      BezierCurve(dimension, midpoint, cp21, cp22, end),
     )
+  }
+
+  companion object {
+    fun from(conn: BezierConnection, dim: String): BezierCurve {
+      val (start, end) = conn.starts
+      val (startAxis, endAxis) = conn.axes
+      return BezierCurve(
+        dim,
+        start,
+        start + (startAxis * conn.handleLength),
+        end + (endAxis * conn.handleLength),
+        end
+      )
+    }
   }
 }
-
-val BezierConnection.path
-  get(): BezierCurve {
-    val (start, end) = starts
-    val (startAxis, endAxis) = axes
-    return BezierCurve(
-      start,
-      start + (startAxis * handleLength),
-      end + (endAxis * handleLength),
-      end
-    )
-  }
 
 val Vec3.angle
   get() = (atan2(x, -z) * (180.0 / Math.PI)).roundToInt().toDouble()

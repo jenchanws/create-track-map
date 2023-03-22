@@ -65,6 +65,9 @@ data class Coordinates(
 
 @Serializable
 data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
+  @SerialName("initial_dimension")
+  @EncodeDefault
+  val initialDimension: String = "minecraft:overworld",
   @SerialName("initial_position")
   @EncodeDefault
   val initialPosition: Coordinates = Coordinates(0, 0),
@@ -85,9 +88,14 @@ data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
 )
 
 @Serializable
-data class MapConfig @OptIn(ExperimentalSerializationApi::class) constructor(
-  @EncodeDefault
+data class DimensionConfig(
+  val label: String,
+)
+
+@Serializable
+data class MapConfig(
   val view: MapView,
+  val dimensions: Map<String, DimensionConfig>,
 )
 
 @Serializable
@@ -108,4 +116,10 @@ data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
   @SerialName("map_view")
   @EncodeDefault
   val mapView: MapView = MapView(),
+  @EncodeDefault
+  val dimensions: Map<String, DimensionConfig> = mapOf(
+    "minecraft:overworld" to DimensionConfig(label = "Overworld"),
+    "minecraft:the_nether" to DimensionConfig(label = "Nether"),
+    "minecraft:the_end" to DimensionConfig(label = "End"),
+  ),
 )

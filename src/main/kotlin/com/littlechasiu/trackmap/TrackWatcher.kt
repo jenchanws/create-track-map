@@ -203,8 +203,7 @@ class TrackWatcher() {
   val network
     get() =
       Network(
-        nodes = nodes.map { it.sendable }.toList(),
-        edges = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
+        tracks = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
         portals = edges.map { it.sendable }.filterIsInstance<Portal>().toList(),
         stations = stations.map { it.sendable }.toList(),
       )
