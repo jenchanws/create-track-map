@@ -56,7 +56,7 @@ val TrackEdge.sendable
 val TravellingPoint.sendable
   get() =
     DimensionLocation(
-      dimension = edge.node1.location.dimension.string,
+      dimension = node1?.location?.dimension?.string ?: "",
       location = getPosition().sendable,
     )
 
