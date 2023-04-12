@@ -101,16 +101,33 @@ body {
   padding: 0 5px;
 }
 
+.leaflet-control-ctm:not(.leaflet-control-expanded) .leaflet-control-body,
 .leaflet-control-layers:not(.leaflet-control-layers-expanded) .leaflet-control-layers-list {
   display: none;
 }
+.leaflet-control-toggle,
 .leaflet-control-layers-toggle {
-  background-image: url(../icons/layers.svg);
+  display: block;
+  width: 36px;
+  height: 36px;
+  background-position: 50% 50%;
   background-size: 32px 32px;
 }
+.leaflet-control-ctm {
+  margin-top: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: #fff;
+  border-radius: 5px;
+}
+.leaflet-control-expanded,
 .leaflet-control-layers-expanded {
   padding: 6px;
 }
+
+.leaflet-control-layers-toggle {
+  background-image: url(../icons/layers.svg);
+}
+.leaflet-control-ctm label,
 .leaflet-control-layers label {
   font-family: var(--ui-font);
   font-size: 14px;
@@ -133,6 +150,37 @@ body {
   background-color: #888;
   color: white;
   font-weight: bold;
+}
+
+.leaflet-control-train-list-toggle {
+  background-image: url(../icons/trains.svg);
+}
+.leaflet-control-station-list-toggle {
+  background-image: url(../icons/stations.svg);
+}
+
+.leaflet-control-scrollbar {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 5px;
+}
+
+.leaflet-right .leaflet-control {
+  float: right;
+}
+.ctm-station-list .station,
+.ctm-train-list .train {
+  font-family: var(--ui-font);
+  font-size: 14px;
+  display: block;
+  border-radius: 2px;
+  padding: 0 5px;
+  margin-top: 2px;
+}
+.ctm-station-list .station:hover,
+.ctm-train-list .train:hover {
+  cursor: pointer;
+  background-color: #ccc;
 }
 
 .leaflet-top {

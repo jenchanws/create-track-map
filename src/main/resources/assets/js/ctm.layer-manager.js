@@ -32,6 +32,11 @@ class LayerManager {
     return this.layers.get(name)
   }
 
+  switchToDimension(dim) {
+    this.layers.forEach((v) => this.map.removeLayer(v.layer))
+    this.map.addLayer(this.dimension(dim).layer)
+  }
+
   switchDimensions(from, to) {
     this.map.removeLayer(this.dimension(from).layer)
     this.map.addLayer(this.dimension(to).layer)

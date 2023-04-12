@@ -1,4 +1,4 @@
-L.CoordsControl = L.Control.extend({
+L.Control.Coords = L.Control.extend({
   options: {
     position: "bottomright",
   },
@@ -103,4 +103,4 @@ L.CoordsControl = L.Control.extend({
   },
 })
 
-L.coordsControl = (opts) => new L.CoordsControl(opts)
+L.control.coords = (opts) => new L.Control.Coords(opts)

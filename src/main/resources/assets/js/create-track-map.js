@@ -6,6 +6,8 @@ let map = L.map("map", {
 
 const dmgr = new DataManager()
 const lmgr = new LayerManager(map)
+const tmgr = new TrainManager(map, lmgr)
+const smgr = new StationManager(map, lmgr)
 
 fetch("api/config.json")
   .then((resp) => resp.json())
@@ -33,7 +35,7 @@ fetch("api/config.json")
     lmgr.setDimensionLabels(dimensions)
     lmgr.dimension(initial_dimension).layer.addTo(map)
 
-    L.coordsControl().addTo(map)
+    L.control.coords().addTo(map)
   })
 
 map.createPane("tracks")
@@ -55,6 +57,7 @@ dmgr.onTrackStatus(({ tracks, portals, stations }) => {
   lmgr.clearTracks()
   lmgr.clearPortals()
   lmgr.clearStations()
+  smgr.update(stations)
 
   tracks.forEach((trk) => {
     const path = trk.path
@@ -162,6 +165,7 @@ dmgr.onSignalStatus(({ signals }) => {
 
 dmgr.onTrainStatus(({ trains }) => {
   lmgr.clearTrains()
+  tmgr.update(trains)
 
   trains.forEach((train) => {
     train.cars.forEach((car, i) => {
