@@ -1,6 +1,8 @@
 pluginManagement {
   repositories {
-    maven(url = "https://maven.fabricmc.net/")
+    maven("https://repo.spongepowered.org/maven")
+    maven("https://maven.parchmentmc.org")
+    maven("https://maven.minecraftforge.net/")
     gradlePluginPortal()
   }
 }

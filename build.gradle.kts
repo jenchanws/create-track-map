@@ -1,10 +1,8 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
   java
-  id("fabric-loom") version "1.1-SNAPSHOT"
+  id("net.minecraftforge.gradle") version "5.1.+"
   id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -13,46 +11,48 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 
-version = "$mod_version-fabric+mc$minecraft_version"
+version = "$mod_version+mc$minecraft_version"
 group = maven_group
+
+val archives_version = "$mod_version-forge+mc$minecraft_version"
 
 repositories {
   mavenCentral()
   maven("https://jitpack.io")  // MixinExtras, Fabric ASM
   maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
-  maven("https://mvn.devos.one/snapshots/")  // Create Fabric
   maven("https://api.modrinth.com/maven")  // LazyDFU
-  maven("https://maven.tterrag.com/")  // Flywheel
-  maven("https://www.cursemaven.com")  // Forge Config API Port
+  maven("https://maven.tterrag.com/")  // Create Forge, Flywheel
+  maven("https://maven.theillusivec4.top/")  // Curios
+  maven("https://thedarkcolour.github.io/KotlinForForge/")
+  maven("https://dvs1.progwml6.com/files/maven/")  // JEI
 }
 
 val shadowDep: Configuration by configurations.creating
 
-val fabric_loader_version: String by project
-val fabric_api_version: String by project
-val fabric_kotlin_version: String by project
-val create_version: String by project
-val porting_lib_version: String by project
-val ktor_version: String by project
-val kotlin_json_version: String by project
-val kotlin_css_version: String by project
+val forge_version: String by project
+val forge_kotlin_version: String by rootProject
+val create_version: String by rootProject
+
+val ktor_version: String by rootProject
+val kotlin_json_version: String by rootProject
+val kotlin_css_version: String by rootProject
+
+minecraft {
+  mappings("official", minecraft_version)
+}
 
 dependencies {
-  minecraft("com.mojang:minecraft:$minecraft_version")
-  mappings(loom.officialMojangMappings())
-
-  modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
-  modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
-
-  modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
-  modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
+  minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+  implementation("thedarkcolour:kotlinforforge:$forge_kotlin_version")
+  implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim"))
 
   shadowDep(implementation("io.ktor:ktor-server-core-jvm:$ktor_version")!!)
   shadowDep(implementation("io.ktor:ktor-server-cio-jvm:$ktor_version")!!)
-  shadowDep(implementation("io.ktor:ktor-server-cors:$ktor_version")!!)
-  shadowDep(implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")!!)
-  shadowDep(implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")!!)
+  shadowDep(implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")!!)
+  shadowDep(implementation("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")!!)
+
+  // included in Kotlin for Forge
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
 }
 
 val targetJavaVersion = 17
@@ -62,13 +62,14 @@ tasks {
     inputs.property("version", project.version)
     filteringCharset = "UTF-8"
 
-    filesMatching("fabric.mod.json") {
+    filesMatching("META-INF/mods.toml") {
       expand(
-      "version" to version,
-      "minecraft_version" to minecraft_version,
-      "fabric_loader_version" to fabric_loader_version,
-      "fabric_api_version" to fabric_api_version,
-      "fabric_kotlin_version" to fabric_kotlin_version)
+        "version" to version,
+        "minecraft_version" to minecraft_version,
+        "forge_version" to (forge_version.split(".")[0]),
+        "kff_version" to forge_kotlin_version,
+        "create_version" to (create_version.split("-")[0])
+      )
     }
   }
 
@@ -81,22 +82,37 @@ tasks {
     options.release.set(targetJavaVersion)
   }
 
-  shadowJar {
-    dependencies {
-      exclude(dependency("org.jetbrains.kotlin:.*"))
-      exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
-      exclude(dependency("org.slf4j:.*"))
+  reobf {
+    shadowJar {
+      dependencies {
+        exclude(dependency("org.jetbrains.kotlin:.*"))
+        exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
+        exclude(dependency("org.slf4j:.*"))
+      }
+      configurations = listOf(shadowDep)
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+      archiveFileName.set("$archives_base_name-$archives_version.jar")
     }
-    configurations = listOf(shadowDep)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   }
 
-  remapJar {
-    val shadowJar = named<ShadowJar>("shadowJar").get()
-    dependsOn("shadowJar")
+  jar {
+    archiveFileName.set("$archives_base_name-$archives_version.jar")
 
-    input.set(shadowJar.archiveFile)
-    archiveBaseName.set(archives_base_name)
+    manifest {
+      attributes(mapOf(
+        "Specification-Title" to project.name,
+        "Specification-Vendor" to "LittleChaSiu",
+        "Specification-Version" to "1",
+        "Implementation-Title" to project.name,
+        "Implementation-Vendor" to "LittleChaSiu",
+        "Implementation-Version" to project.version
+      ))
+    }
+  }
+
+  build {
+    dependsOn("shadowJar")
   }
 }
 

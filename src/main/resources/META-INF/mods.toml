@@ -1,0 +1,39 @@
+modLoader = "kotlinforforge"
+loaderVersion = "[3.9,)"
+license = "MIT"
+
+[[mods]]
+modId = "createtrackmap"
+version = "${version}"
+displayName = "Create Track Map"
+authors = "LittleChaSiu"
+description = "A map of Create train tracks"
+logoFile = "icon.png"
+
+[[dependencies.createtrackmap]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createtrackmap]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createtrackmap]]
+modId = "create"
+mandatory = true
+versionRange = "[${create_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createtrackmap]]
+modId = "kotlinforforge"
+mandatory = true
+versionRange = "[${kff_version},)"
+ordering = "NONE"
+side = "BOTH"
