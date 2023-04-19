@@ -64,12 +64,6 @@ allprojects {
         toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
       }
     }
-
-    jar {
-      from("LICENSE") {
-        rename { "${it}_${archives_base_name}" }
-      }
-    }
   }
 
   archivesName.set("${archives_base_name}-${mod_version}-${name}+mc${minecraft_version}")

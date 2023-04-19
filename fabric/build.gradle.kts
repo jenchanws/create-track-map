@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
   id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -36,7 +38,6 @@ dependencies {
   modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
   common(project(path = ":common", configuration = "namedElements"))
   shadowCommon(project(path = ":common", configuration = "transformProductionFabric"))
-  include(project(path = ":common", configuration = "transformProductionFabric"))
 
   modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_api_version}")
   modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
@@ -76,7 +77,7 @@ tasks {
   }
 
   remapJar {
-    val shadowJar = named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar").get()
+    val shadowJar = named<ShadowJar>("shadowJar").get()
     dependsOn("shadowJar")
 
     from({
