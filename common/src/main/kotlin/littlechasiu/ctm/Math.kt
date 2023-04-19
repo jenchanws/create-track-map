@@ -1,20 +1,18 @@
 package littlechasiu.ctm
 
-import littlechasiu.ctm.model.Edge
 import com.simibubi.create.content.logistics.trains.BezierConnection
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.TrackEdgePoint
+import littlechasiu.ctm.model.Edge
 import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 
-operator fun Vec3.plus(other: Vec3) =
-  Vec3(this.x + other.x, this.y + other.y, this.z + other.z)
+operator fun Vec3.plus(other: Vec3): Vec3 = add(other)
 
-operator fun Vec3.times(scale: Double) =
-  Vec3(this.x * scale, this.y * scale, this.z * scale)
+operator fun Vec3.times(scale: Double): Vec3 = scale(scale)
 
-operator fun Vec3.unaryMinus() = this * -1.0
+operator fun Vec3.unaryMinus(): Vec3 = reverse()
 
 interface Track {
   fun divideAt(position: Double): Pair<Track, Track>

@@ -43,7 +43,7 @@ dependencies {
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_fabric_version+$minecraft_version")
 
   shade("io.ktor:ktor-server-core-jvm:$ktor_version")
-  shade("io.ktor:ktor-server-netty-jvm:$ktor_version")
+  shade("io.ktor:ktor-server-cio-jvm:$ktor_version")
   shade("io.ktor:ktor-server-cors-jvm:$ktor_version")
   shade("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
   shade("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")

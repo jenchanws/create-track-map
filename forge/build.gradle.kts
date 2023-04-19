@@ -17,7 +17,7 @@ configurations.runtimeClasspath.get().extendsFrom(common)
 
 repositories {
   maven("https://maven.theillusivec4.top/")  // Curios
-  maven("https://thedarkcolour.github.io/KotlinForForge/")  // Kotlin for Forge
+  maven("https://thedarkcolour.github.io/KotlinForForge/")
   maven("https://dvs1.progwml6.com/files/maven/")  // JEI
 }
 
@@ -31,7 +31,6 @@ val forge_kotlin_version: String by rootProject
 val create_forge_version: String by rootProject
 
 val ktor_version: String by rootProject
-val netty_version: String by rootProject
 val kotlin_json_version: String by rootProject
 val kotlin_css_version: String by rootProject
 
@@ -44,7 +43,7 @@ dependencies {
   modImplementation("com.simibubi.create:create-${minecraft_version}:${create_forge_version}:slim")
 
   shade("io.ktor:ktor-server-core-jvm:$ktor_version")
-  shade("io.ktor:ktor-server-netty-jvm:$ktor_version")
+  shade("io.ktor:ktor-server-cio-jvm:$ktor_version")
   shade("io.ktor:ktor-server-cors-jvm:$ktor_version")
   shade("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")
 

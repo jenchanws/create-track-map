@@ -13,11 +13,12 @@ import java.nio.file.Path
 
 object TrackMapForgePlatform : Platform {
   override val configFile: Path
-    get() = Path.of(FMLConfig.defaultConfigPath())
+    get() = Path.of(FMLConfig.defaultConfigPath(), TrackMap.configFileName)
 }
 
 @Mod(TrackMapMod.MODID)
 object TrackMapMod {
+  // Because Forge doesn't like hyphens in mod names
   const val MODID = "createtrackmap"
 
   init {

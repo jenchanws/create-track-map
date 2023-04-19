@@ -17,7 +17,7 @@ dependencies {
   modCompileOnly("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
 
   compileOnly("io.ktor:ktor-server-core-jvm:$ktor_version")
-  compileOnly("io.ktor:ktor-server-netty-jvm:$ktor_version")
+  compileOnly("io.ktor:ktor-server-cio-jvm:$ktor_version")
   compileOnly("io.ktor:ktor-server-cors-jvm:$ktor_version")
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
   compileOnly("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")
