@@ -1,7 +1,7 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.*
 import com.simibubi.create.Create
+import com.simibubi.create.content.logistics.trains.GlobalRailwayManager
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.TrackGraph
 import com.simibubi.create.content.logistics.trains.TrackNode
@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import littlechasiu.ctm.model.*
 import net.minecraft.world.phys.Vec3
 import java.util.*
 import kotlin.concurrent.thread
@@ -28,7 +29,7 @@ class TrackWatcher() {
   private var thread: Thread? = null
 
   companion object {
-    val RR = Create.RAILWAYS
+    val RR: GlobalRailwayManager = Create.RAILWAYS
   }
 
   fun start() {

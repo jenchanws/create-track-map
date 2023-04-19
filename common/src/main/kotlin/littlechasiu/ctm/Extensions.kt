@@ -1,6 +1,5 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.*
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.TrackNode
 import com.simibubi.create.content.logistics.trains.TrackNodeLocation
@@ -8,6 +7,7 @@ import com.simibubi.create.content.logistics.trains.entity.Carriage
 import com.simibubi.create.content.logistics.trains.entity.Train
 import com.simibubi.create.content.logistics.trains.entity.TravellingPoint
 import com.simibubi.create.foundation.utility.Couple
+import littlechasiu.ctm.model.*
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3

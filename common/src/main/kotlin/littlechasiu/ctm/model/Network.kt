@@ -1,4 +1,4 @@
-package com.littlechasiu.trackmap.model
+package littlechasiu.ctm.model
 
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalBlock.SignalType
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalTileEntity.SignalState

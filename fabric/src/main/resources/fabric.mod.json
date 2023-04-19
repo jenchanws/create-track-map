@@ -11,16 +11,16 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "com.littlechasiu.trackmap.TrackMapModKt::init"
+        "value": "littlechasiu.ctm.fabric.TrackMapModKt::init"
       }
     ]
   },
   "depends": {
-    "create": ">=0.5.0",
-    "fabricloader": ">=0.14.12",
-    "fabric": ">=0.73.2+1.19.2",
-    "fabric-language-kotlin": ">=1.9.1+kotlin.1.8.10",
-    "minecraft": ">=1.19.2",
+    "create": "*",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric": ">=${fabric_api_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "minecraft": "${minecraft_version}",
     "java": ">=17"
   }
 }

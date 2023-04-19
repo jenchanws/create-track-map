@@ -1,6 +1,5 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.Config
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -9,10 +8,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.commands.Commands
+import littlechasiu.ctm.model.Config
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.nio.file.Files
@@ -21,8 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 
 object TrackMap {
   const val MODID: String = "create-track-map"
-
-  private const val configFileName = "$MODID.json"
+  const val configFileName = "$MODID.json"
 
   @OptIn(ExperimentalSerializationApi::class)
   private val JSON = Json {
@@ -52,18 +47,22 @@ object TrackMap {
   val blockFlow = watcher.blockChannel.flow
   val trainFlow = watcher.trainChannel.flow
 
+  var platform: Platform? = null
+
   @OptIn(ExperimentalSerializationApi::class)
   private fun loadConfig() {
     try {
-      val configFile =
-        FabricLoader.getInstance().configDir.resolve(configFileName)
+      val configFile = platform?.configFile
 
       if (Files.exists(configFile)) {
         config = JSON.decodeFromStream(Files.newInputStream(configFile))
       } else {
         LOGGER.warn("Create Track Map config does not exist, writing defaults to $configFileName")
         config = Config()
-        JSON.encodeToStream(config, Files.newOutputStream(configFile, StandardOpenOption.CREATE))
+        JSON.encodeToStream(
+          config,
+          Files.newOutputStream(configFile, StandardOpenOption.CREATE)
+        )
       }
     } catch (e: Exception) {
       LOGGER.error("Error loading Create Track Map config, using defaults")
@@ -80,34 +79,19 @@ object TrackMap {
     server.dimensions = config.dimensions
   }
 
-  private fun reload() {
-    watcher.stop()
-    server.stop()
+  fun reload() {
+    stop()
+    start()
+  }
 
+  fun start() {
     loadConfig()
-
     watcher.start()
     server.start()
   }
 
-  fun init() {
-    loadConfig()
-
-    CommandRegistrationCallback.EVENT.register { disp, _, _ ->
-      disp.register(Commands.literal("ctm").then(Commands.literal("reload")
-        .requires { src -> src.hasPermission(4) }.executes { _ ->
-          reload()
-          1
-        }))
-    }
-
-    ServerLifecycleEvents.SERVER_STARTED.register {
-      watcher.start()
-      server.start()
-    }
-    ServerLifecycleEvents.SERVER_STOPPING.register {
-      watcher.stop()
-      server.stop()
-    }
+  fun stop() {
+    watcher.stop()
+    server.stop()
   }
 }

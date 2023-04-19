@@ -1,118 +1,76 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+
 plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
   java
-  id("fabric-loom") version "1.1-SNAPSHOT"
-  id("com.github.johnrengelman.shadow") version "7.1.2"
+
+  id("architectury-plugin") version "3.4-SNAPSHOT"
+  id("dev.architectury.loom") version "1.1-SNAPSHOT"
 }
 
-val mod_version: String by project
-val minecraft_version: String by project
-val maven_group: String by project
-val archives_base_name: String by project
+val mod_version: String by rootProject
+val minecraft_version: String by rootProject
+val maven_group: String by rootProject
+val archives_base_name: String by rootProject
 
 version = "$mod_version+mc$minecraft_version"
 group = maven_group
 
-repositories {
-  mavenCentral()
-  maven("https://maven.shedaniel.me/")
-  maven("https://maven.terraformersmc.com/releases/")
-  maven("https://maven.nucleoid.xyz/")
-  maven("https://m2.dv8tion.net/releases")
-  maven("https://jitpack.io")
-  maven("https://maven.jamieswhiteshirt.com/libs-release")
-  maven("https://mvn.devos.one/releases/")
-  maven("https://mvn.devos.one/snapshots/")
-  maven("https://api.modrinth.com/maven")
-  maven("https://maven.cafeteria.dev/releases")
-  maven("https://maven.tterrag.com/")
-  maven("https://www.cursemaven.com")
+subprojects {
+  apply(plugin = "dev.architectury.loom")
+
+  repositories {
+    mavenCentral()
+    maven("https://jitpack.io")  // MixinExtras, Fabric ASM
+    maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
+    maven("https://mvn.devos.one/snapshots/")  // Create Fabric
+    maven("https://api.modrinth.com/maven")  // LazyDFU
+    maven("https://maven.tterrag.com/")  // Create Forge, Flywheel
+    maven("https://www.cursemaven.com")  // Forge Config API Port
+  }
 }
 
-fun DependencyHandler.includeImpl(dep: String) {
-  implementation(dep)
-  include(dep)
-}
+allprojects {
+  apply(plugin = "kotlin")
+  apply(plugin = "java")
+  apply(plugin = "architectury-plugin")
+  apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
-fun DependencyHandler.includeModImpl(dep: String) {
-  modImplementation(dep)
-  include(dep)
-}
+  dependencies {
+    minecraft("com.mojang:minecraft:$minecraft_version")
+    mappings(loom.officialMojangMappings())
+  }
 
-dependencies {
-  val loader_version: String by project
-  val fabric_version: String by project
-  val fabric_kotlin_version: String by project
+  loom {
+    silentMojangMappingsLicense()
+  }
 
-  minecraft("com.mojang:minecraft:$minecraft_version")
-  mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:$loader_version")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
-  modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+  val targetJavaVersion = 17
 
-  val create_version: String by project
-  modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
-
-  val porting_lib_version: String by project
-  modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
-
-  val ktor_version: String by project
-  val kotlin_json_version: String by project
-  val kotlin_css_version: String by project
-  includeImpl("io.ktor:ktor-server-core-jvm:$ktor_version")
-  includeImpl("io.ktor:ktor-server-netty-jvm:$ktor_version")
-  includeImpl("io.ktor:ktor-server-cors:$ktor_version")
-  includeImpl("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
-  includeImpl("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
-}
-
-val targetJavaVersion = 17
-
-tasks {
-  processResources {
-    inputs.property("version", project.version)
-    filteringCharset = "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-      expand("version" to project.version)
+  tasks {
+    compileKotlin {
+      kotlinOptions.jvmTarget = targetJavaVersion.toString()
     }
-  }
 
-  compileKotlin {
-    kotlinOptions.jvmTarget = "17"
-  }
-
-  withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
+    withType<JavaCompile>().configureEach {
+      options.encoding = "UTF-8"
       options.release.set(targetJavaVersion)
     }
-  }
 
-  jar {
-    from("LICENSE") {
-      rename { "${it}_${archives_base_name}" }
+    java {
+      val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+      if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+      }
     }
 
-    from({
-      configurations.runtimeClasspath.get().filter {
-        it.name.contains("ktor")
-          || it.name.contains("kotlinx")
-          || it.name.contains("netty")
-          || it.name.contains("kotlin-css")
-      }.map { zipTree(it) }
-    }) {
-      duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    jar {
+      from("LICENSE") {
+        rename { "${it}_${archives_base_name}" }
+      }
     }
-
-    archiveBaseName.set(archives_base_name)
   }
-}
 
-java {
-  val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-  if (JavaVersion.current() < javaVersion) {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-  }
+  archivesName.set("${archives_base_name}-${mod_version}-${name}+mc${minecraft_version}")
 }

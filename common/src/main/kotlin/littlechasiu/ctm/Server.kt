@@ -1,9 +1,9 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.DimensionConfig
-import com.littlechasiu.trackmap.model.MapConfig
-import com.littlechasiu.trackmap.model.MapStyle
-import com.littlechasiu.trackmap.model.MapView
+import littlechasiu.ctm.model.DimensionConfig
+import littlechasiu.ctm.model.MapConfig
+import littlechasiu.ctm.model.MapStyle
+import littlechasiu.ctm.model.MapView
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
