@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
@@ -11,7 +13,7 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 
-version = "$mod_version+mc$minecraft_version"
+version = "$mod_version-fabric+mc$minecraft_version"
 group = maven_group
 
 repositories {
@@ -30,41 +32,33 @@ repositories {
   maven("https://www.cursemaven.com")
 }
 
-fun DependencyHandler.includeImpl(dep: String) {
-  implementation(dep)
-  include(dep)
-}
+val shadowDep: Configuration by configurations.creating
 
-fun DependencyHandler.includeModImpl(dep: String) {
-  modImplementation(dep)
-  include(dep)
-}
+val fabric_loader_version: String by project
+val fabric_api_version: String by project
+val fabric_kotlin_version: String by project
+val create_version: String by project
+val porting_lib_version: String by project
+val ktor_version: String by project
+val kotlin_json_version: String by project
+val kotlin_css_version: String by project
 
 dependencies {
-  val loader_version: String by project
-  val fabric_version: String by project
-  val fabric_kotlin_version: String by project
-
   minecraft("com.mojang:minecraft:$minecraft_version")
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:$loader_version")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+
+  modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
   modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
 
-  val create_version: String by project
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
-
-  val porting_lib_version: String by project
   modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
 
-  val ktor_version: String by project
-  val kotlin_json_version: String by project
-  val kotlin_css_version: String by project
-  includeImpl("io.ktor:ktor-server-core-jvm:$ktor_version")
-  includeImpl("io.ktor:ktor-server-netty-jvm:$ktor_version")
-  includeImpl("io.ktor:ktor-server-cors:$ktor_version")
-  includeImpl("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
-  includeImpl("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
+  shadowDep(implementation("io.ktor:ktor-server-core-jvm:$ktor_version")!!)
+  shadowDep(implementation("io.ktor:ktor-server-cio-jvm:$ktor_version")!!)
+  shadowDep(implementation("io.ktor:ktor-server-cors:$ktor_version")!!)
+  shadowDep(implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")!!)
+  shadowDep(implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")!!)
 }
 
 val targetJavaVersion = 17
@@ -75,37 +69,39 @@ tasks {
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
-      expand("version" to project.version)
+      expand(
+      "version" to version,
+      "minecraft_version" to minecraft_version,
+      "fabric_loader_version" to fabric_loader_version,
+      "fabric_api_version" to fabric_api_version,
+      "fabric_kotlin_version" to fabric_kotlin_version)
     }
   }
 
   compileKotlin {
-    kotlinOptions.jvmTarget = "17"
+    kotlinOptions.jvmTarget = targetJavaVersion.toString()
   }
 
   withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-      options.release.set(targetJavaVersion)
-    }
+    options.release.set(targetJavaVersion)
   }
 
-  jar {
-    from("LICENSE") {
-      rename { "${it}_${archives_base_name}" }
+  shadowJar {
+    dependencies {
+      exclude(dependency("org.jetbrains.kotlin:.*"))
+      exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
+      exclude(dependency("org.slf4j:.*"))
     }
+    configurations = listOf(shadowDep)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  }
 
-    from({
-      configurations.runtimeClasspath.get().filter {
-        it.name.contains("ktor")
-          || it.name.contains("kotlinx")
-          || it.name.contains("netty")
-          || it.name.contains("kotlin-css")
-      }.map { zipTree(it) }
-    }) {
-      duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
+  remapJar {
+    val shadowJar = named<ShadowJar>("shadowJar").get()
+    dependsOn("shadowJar")
 
+    input.set(shadowJar.archiveFile)
     archiveBaseName.set(archives_base_name)
   }
 }

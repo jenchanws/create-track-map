@@ -6,9 +6,9 @@ import com.littlechasiu.trackmap.model.MapStyle
 import com.littlechasiu.trackmap.model.MapView
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -37,7 +37,7 @@ class Server {
     "minecraft:the_end" to DimensionConfig(label = "End"),
   )
 
-  private var server: NettyApplicationEngine? = null
+  private var server: CIOApplicationEngine? = null
 
   fun start() {
     if (!enable) {
@@ -45,7 +45,7 @@ class Server {
       return
     }
 
-    server = embeddedServer(Netty, port) {
+    server = embeddedServer(CIO, port) {
       install(CORS) {
         anyHost()
       }
