@@ -18,18 +18,12 @@ group = maven_group
 
 repositories {
   mavenCentral()
-  maven("https://maven.shedaniel.me/")
-  maven("https://maven.terraformersmc.com/releases/")
-  maven("https://maven.nucleoid.xyz/")
-  maven("https://m2.dv8tion.net/releases")
-  maven("https://jitpack.io")
-  maven("https://maven.jamieswhiteshirt.com/libs-release")
-  maven("https://mvn.devos.one/releases/")
-  maven("https://mvn.devos.one/snapshots/")
-  maven("https://api.modrinth.com/maven")
-  maven("https://maven.cafeteria.dev/releases")
-  maven("https://maven.tterrag.com/")
-  maven("https://www.cursemaven.com")
+  maven("https://jitpack.io")  // MixinExtras, Fabric ASM
+  maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
+  maven("https://mvn.devos.one/snapshots/")  // Create Fabric
+  maven("https://api.modrinth.com/maven")  // LazyDFU
+  maven("https://maven.tterrag.com/")  // Flywheel
+  maven("https://www.cursemaven.com")  // Forge Config API Port
 }
 
 val shadowDep: Configuration by configurations.creating

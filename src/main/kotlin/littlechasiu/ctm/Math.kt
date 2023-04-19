@@ -1,6 +1,6 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.Edge
+import littlechasiu.ctm.model.Edge
 import com.simibubi.create.content.logistics.trains.BezierConnection
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.TrackEdgePoint

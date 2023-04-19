@@ -1,6 +1,6 @@
-package com.littlechasiu.trackmap
+package littlechasiu.ctm
 
-import com.littlechasiu.trackmap.model.*
+import littlechasiu.ctm.model.*
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.TrackNode
 import com.simibubi.create.content.logistics.trains.TrackNodeLocation

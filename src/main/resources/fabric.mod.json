@@ -11,7 +11,7 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "com.littlechasiu.trackmap.TrackMapModKt::init"
+        "value": "littlechasiu.ctm.TrackMap::init"
       }
     ]
   },
