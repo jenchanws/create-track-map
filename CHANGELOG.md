@@ -1,0 +1,3 @@
+- Adds support for Forge! I know quite a few of you have been asking for it.
+- Backported to 1.18, with thankfully minimal changes.
+- Switched the web server backend to CIO instead of Netty, for better portability (i.e. the Forge version couldn't quite build right with Netty)
