@@ -133,7 +133,4 @@ modrinth {
 
   uploadFile.set { tasks.remapJar.get().archiveFile }
   changelog.set(project.file("CHANGELOG.md").readText())
-  syncBodyFrom.set(project.file("README.md").readText())
 }
-
-tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
