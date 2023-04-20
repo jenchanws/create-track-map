@@ -1,3 +1,6 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
+
 plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
@@ -102,6 +105,9 @@ tasks {
   }
 
   shadowJar {
+    archiveFileName.set("${archives_base_name}-${archives_version}.jar")
+    archiveClassifier.set("")
+
     dependencies {
       exclude(dependency("org.jetbrains.kotlin:.*"))
       exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
@@ -109,19 +115,10 @@ tasks {
     }
     configurations = listOf(shadowDep)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    archiveClassifier.set("")
-    archiveFileName.set("$archives_base_name-$archives_version.jar")
-
-    finalizedBy("reobfShadowJar")
   }
 
   reobf {
     shadowJar {}
-  }
-
-  build {
-    dependsOn("shadowJar")
   }
 }
 
@@ -130,4 +127,14 @@ java {
   if (JavaVersion.current() < javaVersion) {
     toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
   }
+}
+
+afterEvaluate {
+  val shadowJar = tasks.named<ShadowJar>("shadowJar").get()
+  val reobfJar = tasks.named<RenameJarInPlace>("reobfJar").get()
+  val build = tasks.named<DefaultTask>("build").get()
+
+  reobfJar.dependsOn(shadowJar)
+  reobfJar.input.set(shadowJar.archiveFile)
+  build.dependsOn(reobfJar)
 }

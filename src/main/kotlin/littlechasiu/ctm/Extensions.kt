@@ -25,7 +25,10 @@ val Vec3.sendable: Point
     Point(x = x, y = y, z = z)
 
 val ResourceKey<Level>.string: String
-  get() = toString()
+  get() {
+    val loc = location()
+    return "${loc.namespace}:${loc.path}"
+  }
 
 val TrackNodeLocation.sendable get() = location.sendable
 

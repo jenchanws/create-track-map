@@ -1,9 +1,5 @@
 package littlechasiu.ctm
 
-import littlechasiu.ctm.model.DimensionConfig
-import littlechasiu.ctm.model.MapConfig
-import littlechasiu.ctm.model.MapStyle
-import littlechasiu.ctm.model.MapView
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -18,7 +14,16 @@ import kotlinx.css.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import littlechasiu.ctm.model.DimensionConfig
+import littlechasiu.ctm.model.MapConfig
+import littlechasiu.ctm.model.MapStyle
+import littlechasiu.ctm.model.MapView
 import java.io.Writer
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.io.path.extension
+import kotlin.io.path.isRegularFile
 
 class Server {
   @OptIn(ExperimentalSerializationApi::class)
@@ -101,19 +106,36 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-    MapConfig(mapView, dimensions)
+      MapConfig(mapView, dimensions)
 
   private fun Application.module() {
     routing {
-      static("/") {
-        staticBasePackage = "assets"
-        defaultResource("index.html")
-        static("assets") {
-          static("css") { resources("css") }
-          static("js") { resources("js") }
-          static("icons") { resources("icons") }
-        }
+      // For some reason Ktor's static routing isn't working on the Forge
+      // version of the mod, so for now, manually iterate through CTM's static
+      // assets.
+      fun mimeType(path: Path): ContentType {
+        return mapOf(
+          "png" to ContentType.Image.PNG,
+          "svg" to ContentType.Image.SVG,
+          "js" to ContentType.Application.JavaScript,
+          "css" to ContentType.Text.CSS,
+          "html" to ContentType.Text.Html
+        ).getOrDefault(path.extension, ContentType.Application.OctetStream)
       }
+      TrackMap.javaClass.getResource("/static")?.toURI()
+        ?.let { Paths.get(it) }
+        ?.let { root ->
+          Files.walk(root).filter { it.isRegularFile() }.forEach { path ->
+            val remotePath =
+              if (path.endsWith("index.html")) "" else path.toString()
+                .replace("static", "assets")
+            get("/$remotePath") {
+              TrackMap.javaClass.getResourceAsStream("/$path")?.let { f ->
+                call.respondBytes(f.readAllBytes(), mimeType(path))
+              } ?: call.respond(HttpStatusCode.NotFound)
+            }
+          }
+        }
 
       get("/api/config.json") { call.respondJSON(mapConfig) }
 
