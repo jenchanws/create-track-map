@@ -16,7 +16,7 @@ val archives_base_name: String by project
 version = "$mod_version+mc$minecraft_version"
 group = maven_group
 
-val archives_version = "$mod_version-fabric+mc$minecraft_version"
+val archives_version = "$mod_version+mc$minecraft_version-fabric"
 
 repositories {
   mavenCentral()
