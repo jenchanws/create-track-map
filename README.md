@@ -4,12 +4,17 @@
 ![Minecraft versions](https://img.shields.io/modrinth/game-versions/gxoNIjg6)
 ![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
 
+![Dual Loader](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/dual-loader.svg)
 ![Requires Fabric 
-API](https://cdn.sammdot.ca/img/badges/fabric-api.svg)
+API](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/fabric-api.svg)
 ![Requires Fabric 
-Kotlin](https://cdn.sammdot.ca/img/badges/fabric-kotlin.svg)
-[![Available on Modrinth](https://cdn.sammdot.ca/img/badges/modrinth.svg)](https://modrinth.com/mod/create-track-map)
-[![Find me on Discord](https://cdn.sammdot.ca/img/badges/discord.svg)](https://smp.littlechasiu.com/discord)
+Kotlin](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/fabric-kotlin.svg)
+![Requires 
+Kotlin for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/forge-kotlin.svg)
+
+[![Available on GitHub](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/github.svg)](https://github.com/jenchanws/create-track-map)
+[![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
+[![Find me on Discord](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg)](https://smp.littlechasiu.com/discord)
 
 A Fabric mod that displays a track map of Create trains in your world,
 including all tracks, signals, stations, and trains. The signals and
@@ -33,9 +38,7 @@ CTM is intended to be a server side mod, but can also run in single-player world
 
 The `.rt` versions update in real time with Server-Sent Events (SSE). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
 
-The map itself is visible at the root (by default
-`http://localhost:3876/`). The view is not configurable at this time, but
-that will come with a later version.
+The map itself is visible at the root (by default `http://localhost:3876/`).
 
 ### Configuration
 
