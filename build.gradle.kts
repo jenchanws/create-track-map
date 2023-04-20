@@ -6,6 +6,7 @@ plugins {
   java
   id("fabric-loom") version "1.1-SNAPSHOT"
   id("com.github.johnrengelman.shadow") version "7.1.2"
+  id("com.modrinth.minotaur") version "2.+"
 }
 
 val mod_version: String by project
@@ -114,3 +115,25 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
   }
 }
+
+val modrinth_id: String by project
+
+modrinth {
+  token.set(System.getenv("MODRINTH_TOKEN"))
+  projectId.set(modrinth_id)
+  versionNumber.set(mod_version)
+  versionName.set("CTM Fabric $mod_version")
+  gameVersions.add(minecraft_version)
+  loaders.add("fabric")
+  dependencies {
+    required.project("create-fabric")
+    required.project("fabric-api")
+    required.project("fabric-language-kotlin")
+  }
+
+  uploadFile.set { tasks.remapJar.get().archiveFile }
+  changelog.set(project.file("CHANGELOG.md").readText())
+  syncBodyFrom.set(project.file("README.md").readText())
+}
+
+tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
