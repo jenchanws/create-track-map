@@ -1,4 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.modrinth.minotaur.ModrinthExtension
+import com.modrinth.minotaur.TaskModrinthUpload
 import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 plugins {
@@ -130,16 +132,6 @@ java {
   }
 }
 
-afterEvaluate {
-  val shadowJar = tasks.named<ShadowJar>("shadowJar").get()
-  val reobfJar = tasks.named<RenameJarInPlace>("reobfJar").get()
-  val build = tasks.named<DefaultTask>("build").get()
-
-  reobfJar.dependsOn(shadowJar)
-  reobfJar.input.set(shadowJar.archiveFile)
-  build.dependsOn(reobfJar)
-}
-
 val modrinth_id: String by project
 
 modrinth {
@@ -154,9 +146,20 @@ modrinth {
     required.project("kotlin-for-forge")
   }
 
-  uploadFile.set { tasks.reobfJar.get().archiveFile }
   changelog.set(project.file("CHANGELOG.md").readText())
-  syncBodyFrom.set(project.file("README.md").readText())
 }
 
-tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
+afterEvaluate {
+  val shadowJar = tasks.named<ShadowJar>("shadowJar").get()
+  val reobfJar = tasks.named<RenameJarInPlace>("reobfJar").get()
+  val build = tasks.named<DefaultTask>("build").get()
+  val modrinth = tasks.named<TaskModrinthUpload>("modrinth").get()
+
+  reobfJar.dependsOn(shadowJar)
+  reobfJar.input.set(shadowJar.archiveFile)
+  build.dependsOn(reobfJar)
+
+  extensions.getByName<ModrinthExtension>("modrinth")
+    .uploadFile.set { shadowJar.archiveFile }
+  modrinth.dependsOn(reobfJar)
+}
