@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import littlechasiu.ctm.model.Config
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.commands.Commands
@@ -96,7 +96,7 @@ object TrackMap {
   fun init() {
     loadConfig()
 
-    CommandRegistrationCallback.EVENT.register { disp, _, _ ->
+    CommandRegistrationCallback.EVENT.register { disp, _ ->
       disp.register(
         Commands.literal("ctm").then(
           Commands.literal("reload")

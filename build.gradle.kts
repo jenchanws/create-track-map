@@ -49,7 +49,7 @@ dependencies {
   modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
 
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
-  modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
+  modImplementation("io.github.fabricators_of_create:Porting-Lib:$porting_lib_version")
 
   shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")
