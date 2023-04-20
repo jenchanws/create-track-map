@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import littlechasiu.ctm.model.Config
+import net.minecraft.commands.Commands
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerStartedEvent
 import net.minecraftforge.event.server.ServerStoppingEvent
@@ -97,13 +98,13 @@ object TrackMap {
   }
 
   fun registerCommands(event: RegisterCommandsEvent) {
-//    event.dispatcher.register(Commands.literal("ctm")
-//      .then(Commands.literal("reload")
-//        .requires { src -> src.hasPermission(4) }.executes { _ ->
-//          reload()
-//          1
-//        })
-//    )
+    event.dispatcher.register(Commands.literal("ctm")
+      .then(Commands.literal("reload")
+        .requires { src -> src.hasPermission(4) }.executes { _ ->
+          reload()
+          1
+        })
+    )
   }
 
   fun serverStarted(event: ServerStartedEvent) {
