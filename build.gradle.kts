@@ -28,6 +28,8 @@ repositories {
 }
 
 val shadowDep: Configuration by configurations.creating
+configurations.implementation.get().extendsFrom(shadowDep)
+configurations.minecraftLibrary.get().extendsFrom(shadowDep)
 
 val forge_version: String by project
 val forge_kotlin_version: String by rootProject
@@ -46,10 +48,10 @@ dependencies {
   implementation("thedarkcolour:kotlinforforge:$forge_kotlin_version")
   implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim"))
 
-  shadowDep(implementation("io.ktor:ktor-server-core-jvm:$ktor_version")!!)
-  shadowDep(implementation("io.ktor:ktor-server-cio-jvm:$ktor_version")!!)
-  shadowDep(implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")!!)
-  shadowDep(implementation("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")!!)
+  shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
+  shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")
+  shadowDep("io.ktor:ktor-server-cors-jvm:$ktor_version")
+  shadowDep("org.jetbrains.kotlin-wrappers:kotlin-css-jvm:$kotlin_css_version")
 
   // included in Kotlin for Forge
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
@@ -82,33 +84,40 @@ tasks {
     options.release.set(targetJavaVersion)
   }
 
-  reobf {
-    shadowJar {
-      dependencies {
-        exclude(dependency("org.jetbrains.kotlin:.*"))
-        exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
-        exclude(dependency("org.slf4j:.*"))
-      }
-      configurations = listOf(shadowDep)
-      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  jar {
+    archiveClassifier.set("slim")
 
-      archiveFileName.set("$archives_base_name-$archives_version.jar")
+    manifest {
+      attributes(
+        mapOf(
+          "Specification-Title" to project.name,
+          "Specification-Vendor" to "LittleChaSiu",
+          "Specification-Version" to "1",
+          "Implementation-Title" to project.name,
+          "Implementation-Vendor" to "LittleChaSiu",
+          "Implementation-Version" to project.version
+        )
+      )
     }
   }
 
-  jar {
+  shadowJar {
+    dependencies {
+      exclude(dependency("org.jetbrains.kotlin:.*"))
+      exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
+      exclude(dependency("org.slf4j:.*"))
+    }
+    configurations = listOf(shadowDep)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveClassifier.set("")
     archiveFileName.set("$archives_base_name-$archives_version.jar")
 
-    manifest {
-      attributes(mapOf(
-        "Specification-Title" to project.name,
-        "Specification-Vendor" to "LittleChaSiu",
-        "Specification-Version" to "1",
-        "Implementation-Title" to project.name,
-        "Implementation-Vendor" to "LittleChaSiu",
-        "Implementation-Version" to project.version
-      ))
-    }
+    finalizedBy("reobfShadowJar")
+  }
+
+  reobf {
+    shadowJar {}
   }
 
   build {
