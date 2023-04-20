@@ -6,6 +6,7 @@ plugins {
   java
   id("fabric-loom") version "1.1-SNAPSHOT"
   id("com.github.johnrengelman.shadow") version "7.1.2"
+  id("com.modrinth.minotaur") version "2.+"
 }
 
 val mod_version: String by project
@@ -105,4 +106,12 @@ java {
   if (JavaVersion.current() < javaVersion) {
     toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
   }
+}
+
+val modrinth_id: String by project
+
+modrinth {
+  token.set(System.getenv("MODRINTH_TOKEN"))
+  projectId.set(modrinth_id)
+  syncBodyFrom.set(project.file("README.md").readText())
 }

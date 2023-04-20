@@ -1,22 +1,24 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/5498836314b52ffab4ab2170c5b7be9006a365e2/ctm.svg" alt="Create Track Map">
-</p>
-<h1 align="center">
-Create Track Map
-</h1>
-<p align="center">
-<img alt="Mod version" src="https://img.shields.io/modrinth/v/gxoNIjg6"/>
-<img alt="Minecraft versions" src="https://img.shields.io/badge/minecraft-1.18.2%20•%201.19.2-blue"/>
-<img alt="Download count" src="https://img.shields.io/modrinth/dt/gxoNIjg6"/>
-</p>
-<p align="center">
-<img alt="Dual Loader" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/dual-loader.svg"/>
-<img alt="Built with Kotlin" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/kotlin.svg"/>
-<img alt="Requires Create ≥0.5" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg"/>
-<a href="https://github.com/jenchanws/create-track-map"><img alt="Available on GitHub" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/github.svg"/></a>
-<a href="https://modrinth.com/mod/create-track-map"><img alt="Available on Modrinth" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg"/></a>
-<a href="https://smp.littlechasiu.com/discord"><img alt="Find me on Discord" src="https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg"/></a>
-</p>
+<!-- modrinth_exclude.start -->
+![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/5498836314b52ffab4ab2170c5b7be9006a365e2/ctm.svg)
+<!-- modrinth_exclude.end -->
+# Create Track Map
+
+![Mod version](https://img.shields.io/modrinth/v/gxoNIjg6)
+![Minecraft versions](https://img.shields.io/badge/minecraft-1.18.2%20•%201.19.2-blue)
+![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
+
+![Available for Fabric](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/fabric.svg)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create-fabric)
+[![Requires Fabric API](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-api.svg)](https://modrinth.com/mod/fabric-api)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-kotlin.svg)](https://modrinth.com/mod/fabric-language-kotlin)
+
+![Available for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge.svg)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge-kotlin.svg)](https://modrinth.com/mod/kotlin-for-forge)
+
+[![Available on GitHub](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/github.svg)](https://github.com/jenchanws/create-track-map)
+[![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
+[![Find me on Discord](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg)](https://smp.littlechasiu.com/discord)
 
 A multi-loader mod that displays a track map of Create trains in your world,
 including all tracks, signals, stations, and trains. The signals and
