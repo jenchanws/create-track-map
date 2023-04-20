@@ -1,7 +1,7 @@
 # Create Track Map
 
 ![Mod version](https://img.shields.io/modrinth/v/gxoNIjg6)
-![Minecraft versions](https://img.shields.io/modrinth/game-versions/gxoNIjg6)
+![Minecraft versions](https://img.shields.io/badge/minecraft-1.18.2%20•%201.19.2-blue)
 ![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
 
 ![Dual Loader](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/dual-loader.svg)
@@ -16,7 +16,7 @@ Kotlin for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e
 [![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
 [![Find me on Discord](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg)](https://smp.littlechasiu.com/discord)
 
-A Fabric mod that displays a track map of Create trains in your world,
+A multi-loader mod that displays a track map of Create trains in your world,
 including all tracks, signals, stations, and trains. The signals and
 trains are updated in (practically) real time.
 
