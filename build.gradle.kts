@@ -7,6 +7,7 @@ plugins {
   java
   id("net.minecraftforge.gradle") version "5.1.+"
   id("com.github.johnrengelman.shadow") version "7.1.2"
+  id("com.modrinth.minotaur") version "2.+"
 }
 
 val mod_version: String by project
@@ -138,3 +139,24 @@ afterEvaluate {
   reobfJar.input.set(shadowJar.archiveFile)
   build.dependsOn(reobfJar)
 }
+
+val modrinth_id: String by project
+
+modrinth {
+  token.set(System.getenv("MODRINTH_TOKEN"))
+  projectId.set(modrinth_id)
+  versionNumber.set(mod_version)
+  versionName.set("CTM Forge $mod_version")
+  gameVersions.add(minecraft_version)
+  loaders.add("forge")
+  dependencies {
+    required.project("create")
+    required.project("kotlin-for-forge")
+  }
+
+  uploadFile.set { tasks.reobfJar.get().archiveFile }
+  changelog.set(project.file("CHANGELOG.md").readText())
+  syncBodyFrom.set(project.file("README.md").readText())
+}
+
+tasks.modrinth.get().dependsOn(tasks.modrinthSyncBody)
