@@ -47,3 +47,7 @@ jobs:
         with:
           files: |
             build/libs/*.jar
+
+      - name: Upload release artifacts to Modrinth
+        run: |
+          ./gradlew modrinth
