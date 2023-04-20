@@ -63,7 +63,10 @@ object TrackMap {
       } else {
         LOGGER.warn("Create Track Map config does not exist, writing defaults to $configFileName")
         config = Config()
-        JSON.encodeToStream(config, Files.newOutputStream(configFile, StandardOpenOption.CREATE))
+        JSON.encodeToStream(
+          config,
+          Files.newOutputStream(configFile, StandardOpenOption.CREATE)
+        )
       }
     } catch (e: Exception) {
       LOGGER.error("Error loading Create Track Map config, using defaults")
@@ -94,11 +97,14 @@ object TrackMap {
     loadConfig()
 
     CommandRegistrationCallback.EVENT.register { disp, _, _ ->
-      disp.register(Commands.literal("ctm").then(Commands.literal("reload")
-        .requires { src -> src.hasPermission(4) }.executes { _ ->
-          reload()
-          1
-        }))
+      disp.register(
+        Commands.literal("ctm").then(
+          Commands.literal("reload")
+            .requires { src -> src.hasPermission(4) }.executes { _ ->
+              reload()
+              1
+            })
+      )
     }
 
     ServerLifecycleEvents.SERVER_STARTED.register {

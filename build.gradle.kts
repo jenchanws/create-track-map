@@ -13,8 +13,10 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 
-version = "$mod_version-fabric+mc$minecraft_version"
+version = "$mod_version+mc$minecraft_version"
 group = maven_group
+
+val archives_version = "$mod_version-fabric+mc$minecraft_version"
 
 repositories {
   mavenCentral()
@@ -27,6 +29,7 @@ repositories {
 }
 
 val shadowDep: Configuration by configurations.creating
+configurations.implementation.get().extendsFrom(shadowDep)
 
 val fabric_loader_version: String by project
 val fabric_api_version: String by project
@@ -48,11 +51,11 @@ dependencies {
   modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:$create_version+$minecraft_version")
   modImplementation("io.github.fabricators_of_create.Porting-Lib:porting-lib:$porting_lib_version")
 
-  shadowDep(implementation("io.ktor:ktor-server-core-jvm:$ktor_version")!!)
-  shadowDep(implementation("io.ktor:ktor-server-cio-jvm:$ktor_version")!!)
-  shadowDep(implementation("io.ktor:ktor-server-cors:$ktor_version")!!)
-  shadowDep(implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")!!)
-  shadowDep(implementation("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")!!)
+  shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
+  shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")
+  shadowDep("io.ktor:ktor-server-cors-jvm:$ktor_version")
+  shadowDep("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
+  shadowDep("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
 }
 
 val targetJavaVersion = 17
@@ -64,11 +67,12 @@ tasks {
 
     filesMatching("fabric.mod.json") {
       expand(
-      "version" to version,
-      "minecraft_version" to minecraft_version,
-      "fabric_loader_version" to fabric_loader_version,
-      "fabric_api_version" to fabric_api_version,
-      "fabric_kotlin_version" to fabric_kotlin_version)
+        "version" to version,
+        "minecraft_version" to minecraft_version,
+        "fabric_loader_version" to fabric_loader_version,
+        "fabric_api_version" to fabric_api_version,
+        "fabric_kotlin_version" to fabric_kotlin_version
+      )
     }
   }
 
@@ -82,6 +86,9 @@ tasks {
   }
 
   shadowJar {
+    archiveFileName.set("${archives_base_name}-${archives_version}-slim.jar")
+    archiveClassifier.set("")
+
     dependencies {
       exclude(dependency("org.jetbrains.kotlin:.*"))
       exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
@@ -96,7 +103,8 @@ tasks {
     dependsOn("shadowJar")
 
     input.set(shadowJar.archiveFile)
-    archiveBaseName.set(archives_base_name)
+    archiveFileName.set("${archives_base_name}-${archives_version}.jar")
+    archiveClassifier.set("")
   }
 }
 

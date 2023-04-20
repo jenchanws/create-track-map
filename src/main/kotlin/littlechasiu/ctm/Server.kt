@@ -1,9 +1,5 @@
 package littlechasiu.ctm
 
-import littlechasiu.ctm.model.DimensionConfig
-import littlechasiu.ctm.model.MapConfig
-import littlechasiu.ctm.model.MapStyle
-import littlechasiu.ctm.model.MapView
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -18,6 +14,10 @@ import kotlinx.css.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import littlechasiu.ctm.model.DimensionConfig
+import littlechasiu.ctm.model.MapConfig
+import littlechasiu.ctm.model.MapStyle
+import littlechasiu.ctm.model.MapView
 import java.io.Writer
 
 class Server {
@@ -101,7 +101,7 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-    MapConfig(mapView, dimensions)
+      MapConfig(mapView, dimensions)
 
   private fun Application.module() {
     routing {
