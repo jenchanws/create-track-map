@@ -72,6 +72,12 @@ body {
 .train {
   stroke: var(--train-color);
 }
+.train.lead-car {
+  stroke: var(--lead-car-color);
+}
+.head-icon path {
+  fill: var(--lead-car-color);
+}
 
 .coords-control {
   font-family: var(--ui-font);

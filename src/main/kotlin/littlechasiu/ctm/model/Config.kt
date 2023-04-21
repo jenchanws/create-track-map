@@ -47,6 +47,9 @@ data class Colors @OptIn(ExperimentalSerializationApi::class) constructor(
   val station: IconColors = IconColors(primary = "white", outline = "black"),
   @EncodeDefault
   val train: String = "cyan",
+  @SerialName("lead_car")
+  @EncodeDefault
+  val leadCar: String = "plum",
 )
 
 @Serializable
@@ -62,6 +65,12 @@ data class Coordinates(
   val x: Int,
   val z: Int,
 )
+
+@Serializable
+enum class TrackSide {
+  LEFT,
+  RIGHT,
+}
 
 @Serializable
 data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
@@ -85,6 +94,10 @@ data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
   @SerialName("zoom_controls")
   @EncodeDefault
   val zoomControls: Boolean = false,
+
+  @SerialName("signals_on")
+  @EncodeDefault
+  val signalSide: TrackSide = TrackSide.RIGHT,
 )
 
 @Serializable
