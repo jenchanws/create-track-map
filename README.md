@@ -1,6 +1,9 @@
 <!-- modrinth_exclude.start -->
+
 ![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/5498836314b52ffab4ab2170c5b7be9006a365e2/ctm.svg)
+
 <!-- modrinth_exclude.end -->
+
 # Create Track Map
 
 ![Mod version](https://img.shields.io/modrinth/v/gxoNIjg6)
@@ -86,7 +89,8 @@ The following options are available:
         "primary": "white",
         "outline": "black"
       },
-      "train": "cyan"
+      "train": "cyan",
+      "lead_car": "darkturquoise"
     }
   },
 
@@ -103,7 +107,11 @@ The following options are available:
     "max_zoom": 4,
 
     // Whether a zoom control should be visible on the screen.
-    "zoom_controls": true
+    "zoom_controls": true,
+
+    // Which side of the track a signal should be displayed on.
+    // Valid values are LEFT or RIGHT (all uppercase).
+    "signals_on": "RIGHT"
   },
 
   "dimensions": {

@@ -81,4 +81,6 @@ val Train.sendable
       name = name.string,
       owner = null,
       cars = carriages.map { it.sendable }.toList(),
+      backwards = speed < 0,
+      stopped = speed == 0.0,
     )
