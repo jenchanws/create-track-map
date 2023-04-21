@@ -9,6 +9,8 @@ const lmgr = new LayerManager(map)
 const tmgr = new TrainManager(map, lmgr)
 const smgr = new StationManager(map, lmgr)
 
+let leftSide = false
+
 fetch("api/config.json")
   .then((resp) => resp.json())
   .then((cfg) => {
@@ -20,6 +22,7 @@ fetch("api/config.json")
       max_zoom,
       min_zoom,
       zoom_controls,
+      signals_on,
     } = view
 
     map.setMinZoom(min_zoom)
@@ -34,6 +37,8 @@ fetch("api/config.json")
 
     lmgr.setDimensionLabels(dimensions)
     lmgr.dimension(initial_dimension).layer.addTo(map)
+
+    leftSide = signals_on === "LEFT"
 
     L.control.coords().addTo(map)
   })
@@ -145,16 +150,18 @@ dmgr.onSignalStatus(({ signals }) => {
 
   signals.forEach((sig) => {
     if (!!sig.forward) {
+      let iconType = sig.forward.type === "CROSS_SIGNAL" ? chainSignalIcon : autoSignalIcon
       let marker = L.marker(xz(sig.location), {
-        icon: signalIcon(sig.forward.state.toLowerCase()),
+        icon: iconType(sig.forward.state.toLowerCase(), leftSide),
         rotationAngle: sig.forward.angle,
         interactive: false,
         pane: "signals",
       }).addTo(lmgr.dimension(sig.dimension).signals)
     }
     if (!!sig.reverse) {
+      let iconType = sig.reverse.type === "CROSS_SIGNAL" ? chainSignalIcon : autoSignalIcon
       let marker = L.marker(xz(sig.location), {
-        icon: signalIcon(sig.reverse.state.toLowerCase()),
+        icon: iconType(sig.reverse.state.toLowerCase(), leftSide),
         rotationAngle: sig.reverse.angle,
         interactive: false,
         pane: "signals",

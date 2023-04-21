@@ -1,1 +1,3 @@
 - The lead car of each train now has a triangular tip, and is now colored differently to visually distinguish it from the train's other cars. The `map_style.colors.lead_car` config option can be used to change the color.
+- Chain signals are now triangular, pointing towards the next signal. The colors still reflect the state of the signal.
+- Signals can now be configured to display on either side of the track with the `map_view.signals_on` option.

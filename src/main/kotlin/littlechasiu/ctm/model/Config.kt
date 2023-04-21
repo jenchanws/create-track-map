@@ -67,6 +67,12 @@ data class Coordinates(
 )
 
 @Serializable
+enum class TrackSide {
+  LEFT,
+  RIGHT,
+}
+
+@Serializable
 data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
   @SerialName("initial_dimension")
   @EncodeDefault
@@ -88,6 +94,10 @@ data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
   @SerialName("zoom_controls")
   @EncodeDefault
   val zoomControls: Boolean = false,
+
+  @SerialName("signals_on")
+  @EncodeDefault
+  val signalSide: TrackSide = TrackSide.RIGHT,
 )
 
 @Serializable

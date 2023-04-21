@@ -107,7 +107,11 @@ The following options are available:
     "max_zoom": 4,
 
     // Whether a zoom control should be visible on the screen.
-    "zoom_controls": true
+    "zoom_controls": true,
+
+    // Which side of the track a signal should be displayed on.
+    // Valid values are LEFT or RIGHT (all uppercase).
+    "signals_on": "RIGHT"
   },
 
   "dimensions": {

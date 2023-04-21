@@ -1,18 +1,35 @@
-const signalIcon = (color) =>
+const autoSignalIcon = (color, leftSide) =>
   L.divIcon({
     html: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="16"
+      width="10"
       height="16"
-      viewBox="0 0 64 64"
+      viewBox="0 0 40 64"
     >
-      <path class="frame" d="M44 0c11.046 0 20 8.954 20 20 0 10.37-7.893 18.897-17.999 19.901L46 60h18v4H24v-4h18V39.901C31.893 38.898 24 30.371 24 20 24 8.954 32.954 0 44 0Zm0 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16S52.837 4 44 4Z"/>
-      <path class="light" d="M44 4c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16S52.837 4 44 4Z"/>
+      <path class="frame" d="M20 0c11.046 0 20 8.954 20 20 0 10.37-7.893 18.897-17.999 19.901L22 60h18v4H0v-4h18V39.901C7.893 38.898 0 30.371 0 20 0 8.954 8.954 0 20 0Zm0 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4Z"/>
+      <path class="light" d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4Z"/>
     </svg>`,
     className: `signal-icon ${color}`,
-    iconSize: [16, 16],
-    iconAnchor: [2, 16],
+    iconSize: [10, 16],
+    iconAnchor: [leftSide ? 14 : -4, 16],
+  })
+
+const chainSignalIcon = (color, leftSide) =>
+  L.divIcon({
+    html: `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="10"
+      height="16"
+      viewBox="0 0 40 64"
+    >
+      <path class="frame" d="m25.168 3.074.117.21.108.21L38.99 31.368a6 6 0 0 1-5.168 8.627l-.225.004H22v20h18v4H0v-4h18V40H6.402a6 6 0 0 1-5.49-8.422l.097-.209L14.607 3.493a6 6 0 0 1 2.508-2.63L17.37.73l.21-.097a6 6 0 0 1 7.589 2.44Zm-3.37 2.173a2 2 0 0 0-3.596 0L4.604 33.123A2 2 0 0 0 6.402 36h27.196a2 2 0 0 0 1.798-2.877Z"/>
+      <path class="light" d="m21.798 5.247 13.598 27.876A2 2 0 0 1 33.598 36H6.402a2 2 0 0 1-1.798-2.877L18.202 5.247a2 2 0 0 1 3.596 0Z"/>
+    </svg>`,
+    className: `signal-icon ${color}`,
+    iconSize: [10, 16],
+    iconAnchor: [leftSide ? 14 : -4, 16],
   })
 
 const stationIcon = L.divIcon({
