@@ -1,22 +1,26 @@
+<!-- modrinth_exclude.start -->
+![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/5498836314b52ffab4ab2170c5b7be9006a365e2/ctm.svg)
+<!-- modrinth_exclude.end -->
 # Create Track Map
 
 ![Mod version](https://img.shields.io/modrinth/v/gxoNIjg6)
-![Minecraft versions](https://img.shields.io/modrinth/game-versions/gxoNIjg6)
+![Minecraft versions](https://img.shields.io/badge/minecraft-1.18.2%20•%201.19.2-blue)
 ![Download count](https://img.shields.io/modrinth/dt/gxoNIjg6)
 
-![Dual Loader](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/dual-loader.svg)
-![Requires Fabric 
-API](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/fabric-api.svg)
-![Requires Fabric 
-Kotlin](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/fabric-kotlin.svg)
-![Requires 
-Kotlin for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/forge-kotlin.svg)
+![Available for Fabric](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/fabric.svg)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create-fabric)
+[![Requires Fabric API](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-api.svg)](https://modrinth.com/mod/fabric-api)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-kotlin.svg)](https://modrinth.com/mod/fabric-language-kotlin)
+
+![Available for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge.svg)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create)
+[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge-kotlin.svg)](https://modrinth.com/mod/kotlin-for-forge)
 
 [![Available on GitHub](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/github.svg)](https://github.com/jenchanws/create-track-map)
 [![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
 [![Find me on Discord](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg)](https://smp.littlechasiu.com/discord)
 
-A Fabric mod that displays a track map of Create trains in your world,
+A multi-loader mod that displays a track map of Create trains in your world,
 including all tracks, signals, stations, and trains. The signals and
 trains are updated in (practically) real time.
 

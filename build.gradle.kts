@@ -14,7 +14,7 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 
-version = "$mod_version+mc$minecraft_version"
+version = mod_version
 group = maven_group
 
 val archives_version = "$mod_version+mc$minecraft_version-fabric"
@@ -87,8 +87,9 @@ tasks {
   }
 
   shadowJar {
-    archiveFileName.set("${archives_base_name}-${archives_version}-slim.jar")
-    archiveClassifier.set("")
+    archiveBaseName.set(archives_base_name)
+    archiveVersion.set(archives_version)
+    archiveClassifier.set("slim")
 
     dependencies {
       exclude(dependency("org.jetbrains.kotlin:.*"))
@@ -100,12 +101,13 @@ tasks {
   }
 
   remapJar {
+    archiveBaseName.set(archives_base_name)
+    archiveVersion.set(archives_version)
+    archiveClassifier.set("")
+
     val shadowJar = named<ShadowJar>("shadowJar").get()
     dependsOn("shadowJar")
-
     input.set(shadowJar.archiveFile)
-    archiveFileName.set("${archives_base_name}-${archives_version}.jar")
-    archiveClassifier.set("")
   }
 }
 
