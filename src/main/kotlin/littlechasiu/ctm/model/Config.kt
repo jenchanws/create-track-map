@@ -47,6 +47,9 @@ data class Colors @OptIn(ExperimentalSerializationApi::class) constructor(
   val station: IconColors = IconColors(primary = "white", outline = "black"),
   @EncodeDefault
   val train: String = "cyan",
+  @SerialName("lead_car")
+  @EncodeDefault
+  val leadCar: String = "plum",
 )
 
 @Serializable

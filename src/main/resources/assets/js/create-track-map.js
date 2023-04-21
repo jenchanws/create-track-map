@@ -168,6 +168,15 @@ dmgr.onTrainStatus(({ trains }) => {
   tmgr.update(trains)
 
   trains.forEach((train) => {
+    let leadCar = null
+    if (!train.stopped) {
+      if (train.backwards) {
+        leadCar = train.cars.length - 1
+      } else {
+        leadCar = 0
+      }
+    }
+
     train.cars.forEach((car, i) => {
       let parts = car.portal
         ? [
@@ -180,7 +189,7 @@ dmgr.onTrainStatus(({ trains }) => {
         L.polyline(part, {
           weight: 12,
           lineCap: "square",
-          className: "train",
+          className: "train" + (leadCar === i ? " lead-car" : ""),
           pane: "trains",
         })
           .bindTooltip(
@@ -196,6 +205,18 @@ dmgr.onTrainStatus(({ trains }) => {
           )
           .addTo(lmgr.dimension(dim).trains)
       )
+
+      if (leadCar === i) {
+        let [dim, edge] = train.backwards ? parts[parts.length - 1] : parts[0]
+        let [head, tail] = train.backwards ? [edge[1], edge[0]] : [edge[0], edge[1]]
+        let angle = 180 + (Math.atan2(tail[0] - head[0], tail[1] - head[1]) * 180) / Math.PI
+
+        L.marker(head, {
+          icon: headIcon,
+          rotationAngle: angle,
+          pane: "trains",
+        }).addTo(lmgr.dimension(dim).trains)
+      }
     })
   })
 })

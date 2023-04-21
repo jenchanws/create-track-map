@@ -48,3 +48,18 @@ const portalIcon = L.divIcon({
   className: "portal-icon",
   iconSize: [24, 24],
 })
+
+const headIcon = L.divIcon({
+  html: `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="10"
+      height="12"
+      viewBox="0 0 10 12"
+    >
+      <path d="m10 6-6 6H0V0h4z"/>
+    </svg>`,
+  className: "head-icon",
+  iconSize: [10, 12],
+  iconAnchor: [-2, 7],
+})

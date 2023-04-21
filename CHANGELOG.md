@@ -1,3 +1,1 @@
-- Adds support for Forge! I know quite a few of you have been asking for it.
-- Backported to 1.18, with thankfully minimal changes.
-- Switched the web server backend to CIO instead of Netty, for better portability (i.e. the Forge version couldn't quite build right with Netty)
+- The lead car of each train now has a triangular tip, and is now colored differently to visually distinguish it from the train's other cars. The `map_style.colors.lead_car` config option can be used to change the color.
