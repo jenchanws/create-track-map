@@ -157,6 +157,7 @@ class Server {
               "station-color" to Color(mapStyle.colors.station.primary),
               "station-outline" to Color(mapStyle.colors.station.outline),
               "train-color" to Color(mapStyle.colors.train),
+              "lead-car-color" to Color(mapStyle.colors.leadCar),
             )
           }
         }
