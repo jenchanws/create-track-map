@@ -14,7 +14,7 @@ import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.server.ServerStartedEvent
 import net.minecraftforge.event.server.ServerStoppingEvent
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.loading.FMLConfig
+import net.minecraftforge.fml.loading.FMLPaths
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import thedarkcolour.kotlinforforge.forge.FORGE_BUS
@@ -60,7 +60,7 @@ object TrackMap {
   @OptIn(ExperimentalSerializationApi::class)
   private fun loadConfig() {
     try {
-      val configFile = Path.of(FMLConfig.defaultConfigPath(), configFileName)
+      val configFile = Path.of(FMLPaths.CONFIGDIR.get().toString(), configFileName)
 
       if (Files.exists(configFile)) {
         config = JSON.decodeFromStream(Files.newInputStream(configFile))
