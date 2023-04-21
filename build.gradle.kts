@@ -17,7 +17,7 @@ val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
 
-version = "$mod_version+mc$minecraft_version"
+version = mod_version
 group = maven_group
 
 val archives_version = "$mod_version+mc$minecraft_version-forge"
@@ -91,6 +91,8 @@ tasks {
   }
 
   jar {
+    archiveBaseName.set(archives_base_name)
+    archiveVersion.set(archives_version)
     archiveClassifier.set("slim")
 
     manifest {
@@ -108,7 +110,8 @@ tasks {
   }
 
   shadowJar {
-    archiveFileName.set("${archives_base_name}-${archives_version}.jar")
+    archiveBaseName.set(archives_base_name)
+    archiveVersion.set(archives_version)
     archiveClassifier.set("")
 
     dependencies {
