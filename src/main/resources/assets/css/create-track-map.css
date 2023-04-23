@@ -65,7 +65,7 @@ body {
 .signal-icon.red .light {
   fill: var(--signal-red);
 }
-.signal-icon .outline {
+.signal-icon .frame {
   fill: var(--signal-outline);
 }
 
