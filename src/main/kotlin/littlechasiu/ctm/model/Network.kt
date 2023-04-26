@@ -115,9 +115,9 @@ data class BlockStatus(
 @Serializable
 data class TrainCar(
   val id: Int,
-  val leading: DimensionLocation,
+  val leading: DimensionLocation? = null,
+  val trailing: DimensionLocation? = null,
   val portal: Portal? = null,
-  val trailing: DimensionLocation,
 )
 
 @Serializable
