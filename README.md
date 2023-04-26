@@ -1,6 +1,6 @@
 <!-- modrinth_exclude.start -->
 
-![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/8154af2f15f682b97b7f64745725e289431f20ff/ctm.svg)
+![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/b545411b55a9b18bb42c58dcf22f909d2c404498/ctm.svg)
 
 <!-- modrinth_exclude.end -->
 
