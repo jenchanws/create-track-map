@@ -1,9 +1,9 @@
 package littlechasiu.ctm
 
-import littlechasiu.ctm.model.Edge
 import com.simibubi.create.content.logistics.trains.BezierConnection
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.TrackEdgePoint
+import littlechasiu.ctm.model.Edge
 import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 import kotlin.math.roundToInt
@@ -112,8 +112,16 @@ fun TrackEdgePoint.locationOn(edge: TrackEdge): Vec3 {
   return edge.getPosition(basePos / edge.length)
 }
 
+fun TrackEdge.directionAt(position: Double): Vec3 {
+  val step = 0.05 / length
+  val t = position / length
+  val ahead = getPosition((t + step).coerceAtMost(1.0))
+  val behind = getPosition((t - step).coerceAtLeast(0.0))
+  return ahead.subtract(behind).normalize()
+}
+
 fun TrackEdgePoint.angleOn(edge: TrackEdge): Double {
-  val baseVec = edge.getDirectionAt(position / edge.length)
-  val vec = if (isPrimary(edge.node1)) -baseVec else baseVec
-  return vec.angle
+  val basePos = if (isPrimary(edge.node1)) edge.length - position else position
+  val vec = edge.directionAt(basePos)
+  return if (isPrimary(edge.node1)) -vec.angle else vec.angle
 }
