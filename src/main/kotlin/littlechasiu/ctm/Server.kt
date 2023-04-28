@@ -105,15 +105,10 @@ class Server {
 
   private fun Application.module() {
     routing {
-      static("/") {
-        staticBasePackage = "assets"
-        defaultResource("index.html")
-        static("assets") {
-          static("css") { resources("css") }
-          static("js") { resources("js") }
-          static("icons") { resources("icons") }
-        }
-      }
+      staticResources(
+        "/",
+        "assets.littlechasiu.ctm.static",
+        "index.html")
 
       get("/api/config.json") { call.respondJSON(mapConfig) }
 

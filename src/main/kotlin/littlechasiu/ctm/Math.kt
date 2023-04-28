@@ -123,5 +123,5 @@ fun TrackEdge.directionAt(position: Double): Vec3 {
 fun TrackEdgePoint.angleOn(edge: TrackEdge): Double {
   val basePos = if (isPrimary(edge.node1)) edge.length - position else position
   val vec = edge.directionAt(basePos)
-  return if (isPrimary(edge.node1)) -vec.angle else vec.angle
+  return if (isPrimary(edge.node1)) vec.angle + 180 else vec.angle
 }
