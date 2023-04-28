@@ -1,6 +1,5 @@
 package littlechasiu.ctm
 
-import littlechasiu.ctm.model.*
 import com.simibubi.create.Create
 import com.simibubi.create.content.logistics.trains.TrackEdge
 import com.simibubi.create.content.logistics.trains.TrackGraph
@@ -15,6 +14,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import littlechasiu.ctm.model.*
 import net.minecraft.world.phys.Vec3
 import java.util.*
 import kotlin.concurrent.thread
@@ -279,6 +279,10 @@ class TrackWatcher() {
                   if (it.isPrimary(edge.node2)) it.position
                   else edge.length - it.position
                 }
+            if (signals.isEmpty()) {
+              return
+            }
+
             val path = edge.path
             val segments = mutableListOf<Track>()
 
