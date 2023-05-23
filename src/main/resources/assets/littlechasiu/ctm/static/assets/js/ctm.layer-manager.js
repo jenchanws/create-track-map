@@ -1,27 +1,39 @@
 class LayerManager {
   constructor(map) {
-    this.layers = new Map()
-    this.contentLayers = {
-      tracks: L.layerGroup([]),
-      blocks: L.layerGroup([]),
-      signals: L.layerGroup([]),
-      portals: L.layerGroup([]),
-      stations: L.layerGroup([]),
-      trains: L.layerGroup([]),
-    }
     this.map = map
-    this.labels = new Map()
-    this.layerConfigs = null
+
+    this.layerConfigs = {}
+    this.labels = {}
+    this.currentDimension = null
+    this.dimensionLayers = {}
+    this.contentLayers = {
+      tracks: L.layerGroup([]).addTo(map),
+      blocks: L.layerGroup([]).addTo(map),
+      signals: L.layerGroup([]).addTo(map),
+      portals: L.layerGroup([]).addTo(map),
+      stations: L.layerGroup([]).addTo(map),
+      trains: L.layerGroup([]).addTo(map),
+    }
+
+    this.actualLayers = {}
+
     this.control = L.control.layers([], []).addTo(map)
+
+    map.on("baselayerchange", this._onDimensionChange, this)
+    map.on("overlayadd", this._onOverlayAdd, this)
+    map.on("overlayremove", this._onOverlayRemove, this)
+    map.on("zoomend", this._onZoomLevelChange, this)
   }
 
   setLayerConfig(cfg) {
-    this.layerConfigs = cfg
-
     Object.keys(cfg).forEach((key) => {
-      this.contentLayers[key].min_zoom = cfg[key].minZoom
-      this.contentLayers[key].max_zoom = cfg[key].maxZoom
-      this.control.addOverlay(this.contentLayers[key], cfg[key].label)
+      this.layerConfigs[key] = {
+        minZoom: cfg[key].min_zoom,
+        maxZoom: cfg[key].max_zoom,
+      }
+      let typeLayer = this.contentLayers[key]
+      typeLayer.name = key
+      this.control.addOverlay(typeLayer, cfg[key].label)
     })
   }
 
@@ -29,59 +41,98 @@ class LayerManager {
     Object.keys(obj).forEach((dim) => {
       let label = obj[dim].label
       if (!!label) {
-        this.labels.set(dim, label)
+        this.labels[dim] = label
       }
     })
   }
 
   dimension(name) {
-    if (!this.layers.has(name)) {
-      let layer = L.layerGroup([])
+    if (!this.dimensionLayers.hasOwnProperty(name)) {
       let layerGroup = {
-        layer,
-        tracks: L.layerGroup([]).addTo(layer),
-        blocks: L.layerGroup([]).addTo(layer),
-        signals: L.layerGroup([]).addTo(layer),
-        portals: L.layerGroup([]).addTo(layer),
-        stations: L.layerGroup([]).addTo(layer),
-        trains: L.layerGroup([]).addTo(layer),
+        tracks: L.layerGroup([]),
+        blocks: L.layerGroup([]),
+        signals: L.layerGroup([]),
+        portals: L.layerGroup([]),
+        stations: L.layerGroup([]),
+        trains: L.layerGroup([]),
       }
-      this.layers.set(name, layerGroup)
-      this.control.addBaseLayer(layer, this.labels.get(name) || name)
+      let layer = (this.dimensionLayers[name] = L.layerGroup([]))
+      layer.name = name
+      this.control.addBaseLayer(layer, this.labels[name] || name)
+      this.actualLayers[name] = layerGroup
     }
-    return this.layers.get(name)
+    return this.actualLayers[name]
+  }
+
+  layer(dim, type) {
+    return this.dimension(dim)[type]
   }
 
   _hideDimension(dim) {
-    this.map.removeLayer(this.dimension(dim).layer)
-
-    // Object.keys(this.contentLayers).forEach((key) => {
-    //   this.dimension(dim)[key].addTo(this.dimension(dim).layer)
-    // })
+    let layers = this.dimension(dim)
+    this.map.removeLayer(this.dimensionLayers[dim])
+    Object.values(layers).forEach((layer) => {
+      this.map.removeLayer(layer)
+    })
   }
 
   _showDimension(dim) {
-    this.map.addLayer(this.dimension(dim).layer)
-
-    // Object.keys(this.contentLayers).forEach((key) => {
-    //   if (!this.map.hasLayer(this.contentLayers[key])) {
-    //     this.dimension(dim).layer.removeLayer(this.dimension(dim)[key])
-    //   }
-    // })
+    let layers = this.dimension(dim)
+    Object.entries(layers).forEach(([key, layer]) => {
+      if (this.map.hasLayer(this.contentLayers[key])) {
+        this.map.addLayer(layer)
+      }
+    })
+    this.currentDimension = dim
   }
 
   switchToDimension(dim) {
-    this.layers.forEach((l) => this._hideDimension(l))
+    Object.keys(this.dimensionLayers).forEach((l) => this._hideDimension(l))
     this._showDimension(dim)
+    this.dimensionLayers[dim].addTo(map)
   }
 
   switchDimensions(from, to) {
     this._hideDimension(from)
     this._showDimension(to)
+    this.dimensionLayers[dim].addTo(map)
+  }
+
+  _onDimensionChange({ layer }) {
+    Object.keys(this.dimensionLayers).forEach((l) => this._hideDimension(l))
+    this._showDimension(layer.name)
+  }
+
+  _onOverlayAdd({ layer }) {
+    let zoom = this.map.getZoom()
+    let layerConfig = this.layerConfigs[layer.name]
+    let dimLayer = this.dimension(this.currentDimension)[layer.name]
+    if (zoom >= layerConfig.minZoom && zoom <= layerConfig.maxZoom) {
+      dimLayer.addTo(this.map)
+    }
+  }
+
+  _onOverlayRemove({ layer }) {
+    this.map.removeLayer(this.dimension(this.currentDimension)[layer.name])
+  }
+
+  _onZoomLevelChange() {
+    let zoom = this.map.getZoom()
+
+    Object.entries(this.contentLayers).forEach(([name, layer]) => {
+      let layerConfig = this.layerConfigs[name]
+      let dimLayer = this.dimension(this.currentDimension)[name]
+
+      if (zoom < layerConfig.minZoom || zoom > layerConfig.maxZoom) {
+        this.map.removeLayer(dimLayer)
+      } else if (this.map.hasLayer(layer) && !this.map.hasLayer(dimLayer)) {
+        this.map.addLayer(dimLayer)
+      }
+    })
   }
 
   _clearLayers(key) {
-    Array.from(this.layers.values()).forEach((obj) => obj[key].clearLayers())
+    Array.from(Object.values(this.actualLayers)).forEach((obj) => obj[key].clearLayers())
   }
 
   clearTracks() {
