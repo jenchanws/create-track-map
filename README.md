@@ -126,6 +126,39 @@ The following options are available:
     "minecraft:the_end": {
       "label": "End"
     }
+  },
+
+  "layers": {
+    "tracks": {
+      "label": "Tracks",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "blocks": {
+      "label": "Track Occupancy",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "signals": {
+      "label": "Signals",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "portals": {
+      "label": "Portals",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "stations": {
+      "label": "Stations",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "trains": {
+      "label": "Trains",
+      "min_zoom": 0,
+      "max_zoom": 4
+    }
   }
 }
 ```

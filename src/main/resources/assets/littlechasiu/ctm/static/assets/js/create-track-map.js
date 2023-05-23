@@ -14,7 +14,7 @@ let leftSide = false
 fetch("api/config.json")
   .then((resp) => resp.json())
   .then((cfg) => {
-    const { view, dimensions } = cfg
+    const { layers, view, dimensions } = cfg
     const {
       initial_dimension,
       initial_position,
@@ -35,8 +35,9 @@ fetch("api/config.json")
       map.zoomControl.remove()
     }
 
+    lmgr.setLayerConfig(layers)
     lmgr.setDimensionLabels(dimensions)
-    lmgr.dimension(initial_dimension).layer.addTo(map)
+    lmgr.switchToDimension(initial_dimension)
 
     leftSide = signals_on === "LEFT"
 

@@ -14,10 +14,7 @@ import kotlinx.css.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import littlechasiu.ctm.model.DimensionConfig
-import littlechasiu.ctm.model.MapConfig
-import littlechasiu.ctm.model.MapStyle
-import littlechasiu.ctm.model.MapView
+import littlechasiu.ctm.model.*
 import java.io.Writer
 
 class Server {
@@ -35,6 +32,14 @@ class Server {
     "minecraft:overworld" to DimensionConfig(label = "Overworld"),
     "minecraft:the_nether" to DimensionConfig(label = "Nether"),
     "minecraft:the_end" to DimensionConfig(label = "End"),
+  )
+  var layers = mapOf(
+    "tracks" to LayerConfig(label = "Tracks"),
+    "blocks" to LayerConfig(label = "Track Occupancy"),
+    "signals" to LayerConfig(label = "Signals"),
+    "portals" to LayerConfig(label = "Portals"),
+    "stations" to LayerConfig(label = "Stations"),
+    "trains" to LayerConfig(label = "Trains"),
   )
 
   private var server: CIOApplicationEngine? = null
@@ -101,7 +106,7 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-      MapConfig(mapView, dimensions)
+      MapConfig(mapView, dimensions, layers)
 
   private fun Application.module() {
     routing {
