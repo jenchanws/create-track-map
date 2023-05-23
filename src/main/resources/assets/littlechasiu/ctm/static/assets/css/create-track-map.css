@@ -65,7 +65,7 @@ body {
 .signal-icon.red .light {
   fill: var(--signal-red);
 }
-.signal-icon .outline {
+.signal-icon .frame {
   fill: var(--signal-outline);
 }
 
@@ -130,6 +130,10 @@ body {
   padding: 6px;
 }
 
+.leaflet-control-layers-separator {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 .leaflet-control-layers-toggle {
   background-image: url(../icons/layers.svg);
 }
@@ -138,21 +142,36 @@ body {
   font-family: var(--ui-font);
   font-size: 14px;
 }
-.leaflet-control-layers input[type="radio"] {
+.leaflet-control-layers input[type="radio"],
+.leaflet-control-layers input[type="checkbox"] {
   display: none;
 }
-.leaflet-control-layers input[type="radio"] + span {
+.leaflet-control-layers input[type="radio"] + span,
+.leaflet-control-layers input[type="checkbox"] + span {
   display: inline-block;
   width: 100%;
   border-radius: 2px;
   padding: 0 5px;
   margin-top: 2px;
 }
-.leaflet-control-layers input[type="radio"] + span:hover {
+.leaflet-control-layers-overlays label input + span {
+  border-radius: 0;
+}
+.leaflet-control-layers-overlays label:first-child input + span {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.leaflet-control-layers-overlays label:last-child input + span {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.leaflet-control-layers input[type="radio"] + span:hover,
+.leaflet-control-layers input[type="checkbox"] + span:hover {
   cursor: pointer;
   background-color: #ccc;
 }
-.leaflet-control-layers input[type="radio"]:checked + span {
+.leaflet-control-layers input[type="radio"]:checked + span,
+.leaflet-control-layers input[type="checkbox"]:checked + span {
   background-color: #888;
   color: white;
   font-weight: bold;

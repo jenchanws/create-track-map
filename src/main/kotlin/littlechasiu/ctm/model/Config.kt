@@ -6,7 +6,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignalColors @OptIn(ExperimentalSerializationApi::class) constructor(
+@OptIn(ExperimentalSerializationApi::class)
+data class SignalColors(
   @EncodeDefault
   val green: String = "#71db51",
   @EncodeDefault
@@ -18,7 +19,8 @@ data class SignalColors @OptIn(ExperimentalSerializationApi::class) constructor(
 )
 
 @Serializable
-data class TrackColors @OptIn(ExperimentalSerializationApi::class) constructor(
+@OptIn(ExperimentalSerializationApi::class)
+data class TrackColors(
   @EncodeDefault
   val occupied: String = "red",
   @EncodeDefault
@@ -34,7 +36,8 @@ data class IconColors(
 )
 
 @Serializable
-data class Colors @OptIn(ExperimentalSerializationApi::class) constructor(
+@OptIn(ExperimentalSerializationApi::class)
+data class Colors(
   @EncodeDefault
   val background: String = "#888",
   @EncodeDefault
@@ -53,7 +56,8 @@ data class Colors @OptIn(ExperimentalSerializationApi::class) constructor(
 )
 
 @Serializable
-data class MapStyle @OptIn(ExperimentalSerializationApi::class) constructor(
+@OptIn(ExperimentalSerializationApi::class)
+data class MapStyle(
   @EncodeDefault
   val font: String = "ui-monospace, \"JetBrains Mono\", monospace",
   @EncodeDefault
@@ -73,7 +77,8 @@ enum class TrackSide {
 }
 
 @Serializable
-data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
+@OptIn(ExperimentalSerializationApi::class)
+data class MapView(
   @SerialName("initial_dimension")
   @EncodeDefault
   val initialDimension: String = "minecraft:overworld",
@@ -101,6 +106,18 @@ data class MapView @OptIn(ExperimentalSerializationApi::class) constructor(
 )
 
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
+data class LayerConfig(
+  val label: String,
+  @SerialName("min_zoom")
+  @EncodeDefault
+  val minZoom: Int = 0,
+  @SerialName("max_zoom")
+  @EncodeDefault
+  val maxZoom: Int = 4,
+)
+
+@Serializable
 data class DimensionConfig(
   val label: String,
 )
@@ -109,6 +126,7 @@ data class DimensionConfig(
 data class MapConfig(
   val view: MapView,
   val dimensions: Map<String, DimensionConfig>,
+  val layers: Map<String, LayerConfig>,
 )
 
 @Serializable
@@ -134,5 +152,14 @@ data class Config @OptIn(ExperimentalSerializationApi::class) constructor(
     "minecraft:overworld" to DimensionConfig(label = "Overworld"),
     "minecraft:the_nether" to DimensionConfig(label = "Nether"),
     "minecraft:the_end" to DimensionConfig(label = "End"),
+  ),
+  @EncodeDefault
+  val layers: Map<String, LayerConfig> = mapOf(
+    "tracks" to LayerConfig(label = "Tracks"),
+    "blocks" to LayerConfig(label = "Track Occupancy"),
+    "signals" to LayerConfig(label = "Signals"),
+    "portals" to LayerConfig(label = "Portals"),
+    "stations" to LayerConfig(label = "Stations"),
+    "trains" to LayerConfig(label = "Trains"),
   ),
 )

@@ -14,10 +14,7 @@ import kotlinx.css.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import littlechasiu.ctm.model.DimensionConfig
-import littlechasiu.ctm.model.MapConfig
-import littlechasiu.ctm.model.MapStyle
-import littlechasiu.ctm.model.MapView
+import littlechasiu.ctm.model.*
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
@@ -40,6 +37,14 @@ class Server {
     "minecraft:overworld" to DimensionConfig(label = "Overworld"),
     "minecraft:the_nether" to DimensionConfig(label = "Nether"),
     "minecraft:the_end" to DimensionConfig(label = "End"),
+  )
+  var layers = mapOf(
+    "tracks" to LayerConfig(label = "Tracks"),
+    "blocks" to LayerConfig(label = "Track Occupancy"),
+    "signals" to LayerConfig(label = "Signals"),
+    "portals" to LayerConfig(label = "Portals"),
+    "stations" to LayerConfig(label = "Stations"),
+    "trains" to LayerConfig(label = "Trains"),
   )
 
   private var server: CIOApplicationEngine? = null
@@ -106,7 +111,7 @@ class Server {
 
   private val mapConfig: MapConfig
     get() =
-      MapConfig(mapView, dimensions)
+      MapConfig(mapView, dimensions, layers)
 
   private fun Application.module() {
     routing {
@@ -122,13 +127,14 @@ class Server {
           "html" to ContentType.Text.Html
         ).getOrDefault(path.extension, ContentType.Application.OctetStream)
       }
-      TrackMap.javaClass.getResource("/static")?.toURI()
+      TrackMap.javaClass.getResource("/assets/littlechasiu/ctm/static")?.toURI()
         ?.let { Paths.get(it) }
         ?.let { root ->
           Files.walk(root).filter { it.isRegularFile() }.forEach { path ->
             val remotePath =
               if (path.endsWith("index.html")) "" else path.toString()
-                .replace("static", "assets")
+                .replace("assets/littlechasiu/ctm/static/", "")
+            TrackMap.LOGGER.info("/$remotePath -> /$path")
             get("/$remotePath") {
               TrackMap.javaClass.getResourceAsStream("/$path")?.let { f ->
                 call.respondBytes(f.readAllBytes(), mimeType(path))
