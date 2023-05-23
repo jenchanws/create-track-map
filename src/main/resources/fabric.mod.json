@@ -6,6 +6,7 @@
   "description": "A map of Create train tracks",
   "authors": ["LittleChaSiu"],
   "license": "MIT",
+  "icon": "assets/littlechasiu/ctm/static/assets/logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [

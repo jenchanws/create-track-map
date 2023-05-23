@@ -1,6 +1,6 @@
 <!-- modrinth_exclude.start -->
 
-![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/5498836314b52ffab4ab2170c5b7be9006a365e2/ctm.svg)
+![Create Track Map](https://raw.githubusercontent.com/gist/jenchanws/44291eb9435be4fc46be1b8661ae4406/raw/b545411b55a9b18bb42c58dcf22f909d2c404498/ctm.svg)
 
 <!-- modrinth_exclude.end -->
 
@@ -13,11 +13,11 @@
 ![Available for Fabric](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/fabric.svg)
 [![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create-fabric)
 [![Requires Fabric API](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-api.svg)](https://modrinth.com/mod/fabric-api)
-[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-kotlin.svg)](https://modrinth.com/mod/fabric-language-kotlin)
+[![Requires Fabric Kotlin](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/1fc7a8dfba76460bedba7fa0b5516b917815e39c/fabric-kotlin.svg)](https://modrinth.com/mod/fabric-language-kotlin)
 
 ![Available for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge.svg)
 [![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/create-0.5.svg)](https://modrinth.com/mod/create)
-[![Requires Create ≥0.5](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge-kotlin.svg)](https://modrinth.com/mod/kotlin-for-forge)
+[![Requires Kotlin for Forge](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/522a26e2c91cbafab79ddbbc6d942f1720249a8c/forge-kotlin.svg)](https://modrinth.com/mod/kotlin-for-forge)
 
 [![Available on GitHub](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/github.svg)](https://github.com/jenchanws/create-track-map)
 [![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
@@ -125,6 +125,39 @@ The following options are available:
     },
     "minecraft:the_end": {
       "label": "End"
+    }
+  },
+
+  "layers": {
+    "tracks": {
+      "label": "Tracks",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "blocks": {
+      "label": "Track Occupancy",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "signals": {
+      "label": "Signals",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "portals": {
+      "label": "Portals",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "stations": {
+      "label": "Stations",
+      "min_zoom": 0,
+      "max_zoom": 4
+    },
+    "trains": {
+      "label": "Trains",
+      "min_zoom": 0,
+      "max_zoom": 4
     }
   }
 }
