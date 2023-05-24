@@ -55,8 +55,9 @@ val TrackEdge.sendable
 
 val TravellingPoint.sendable
   get() =
+    if (node1 == null || edge == null) null else
     DimensionLocation(
-      dimension = node1?.location?.dimension?.string ?: "",
+      dimension = node1.location.dimension.string,
       location = getPosition().sendable,
     )
 
@@ -64,13 +65,13 @@ val Carriage.sendable
   get() =
     TrainCar(
       id = id,
-      leading = leadingPoint.sendable,
-      trailing = trailingPoint.sendable,
+      leading = leadingPoint?.sendable,
+      trailing = trailingPoint?.sendable,
       portal = this.train.occupiedSignalBlocks.keys.map {
         TrackMap.watcher.portalsInBlock(it)
       }.flatten().firstOrNull {
-        it.from.dimension == leadingPoint.node1.location.dimension.string &&
-          it.to.dimension == trailingPoint.node1.location.dimension.string
+        it.from.dimension == leadingPoint?.node1?.location?.dimension?.string &&
+          it.to.dimension == trailingPoint?.node1?.location?.dimension?.string
       },
     )
 

@@ -7,7 +7,7 @@ plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
   java
-  id("net.minecraftforge.gradle") version "5.1.+"
+  id("net.minecraftforge.gradle") version "6.+"
   id("com.github.johnrengelman.shadow") version "7.1.2"
   id("com.modrinth.minotaur") version "2.+"
 }
@@ -30,7 +30,7 @@ repositories {
   maven("https://maven.tterrag.com/")  // Create Forge, Flywheel
   maven("https://maven.theillusivec4.top/")  // Curios
   maven("https://thedarkcolour.github.io/KotlinForForge/")
-  maven("https://dvs1.progwml6.com/files/maven/")  // JEI
+  maven("https://maven.blamejared.com/")  // JEI
 }
 
 val shadowDep: Configuration by configurations.creating
