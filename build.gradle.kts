@@ -124,7 +124,7 @@ val modrinth_id: String by project
 modrinth {
   token.set(System.getenv("MODRINTH_TOKEN"))
   projectId.set(modrinth_id)
-  versionNumber.set(mod_version)
+  versionNumber.set("$mod_version+create-$create_version_short")
   versionName.set("CTM Fabric $mod_version (Create $create_version_short)")
   gameVersions.add(minecraft_version)
   loaders.add("fabric")
