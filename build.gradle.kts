@@ -32,6 +32,7 @@ repositories {
   maven("https://maven.theillusivec4.top/")  // Curios
   maven("https://thedarkcolour.github.io/KotlinForForge/")
   maven("https://maven.blamejared.com/")  // JEI
+  maven("https://squiddev.cc/maven/")  // CC: Tweaked
 }
 
 val shadowDep: Configuration by configurations.creating
