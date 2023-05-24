@@ -1,15 +1,15 @@
 package littlechasiu.ctm
 
 import com.simibubi.create.Create
-import com.simibubi.create.content.logistics.trains.TrackEdge
-import com.simibubi.create.content.logistics.trains.TrackGraph
-import com.simibubi.create.content.logistics.trains.TrackNode
-import com.simibubi.create.content.logistics.trains.entity.Train
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalBlock.SignalType
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalBoundary
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalEdgeGroup
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalTileEntity.SignalState
-import com.simibubi.create.content.logistics.trains.management.edgePoint.station.GlobalStation
+import com.simibubi.create.content.trains.graph.TrackEdge
+import com.simibubi.create.content.trains.graph.TrackGraph
+import com.simibubi.create.content.trains.graph.TrackNode
+import com.simibubi.create.content.trains.entity.Train
+import com.simibubi.create.content.trains.signal.SignalBlock.SignalType
+import com.simibubi.create.content.trains.signal.SignalBlockEntity.SignalState
+import com.simibubi.create.content.trains.signal.SignalBoundary
+import com.simibubi.create.content.trains.signal.SignalEdgeGroup
+import com.simibubi.create.content.trains.station.GlobalStation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
