@@ -22,20 +22,15 @@ jobs:
       matrix:
         java: [17]
         minecraft: ["1.19", "1.18"]
+        loader: [fabric, forge]
+        create: [0.5.0, 0.5.1]
 
-        include:
+        exclude:
           # FIXME: Build for Create Fabric 0.5.1 when that's out
           - loader: fabric
-            loader_name: Fabric
-            create: "0.5.0"
-          - loader: forge
-            loader_name: Forge
-            create: "0.5.0"
-          - loader: forge
-            loader_name: Forge
-            create: "0.5.1"
+            create: 0.5.1
 
-    name: ${{matrix.loader_name}} ${{matrix.minecraft}} (Create ${{matrix.create}})
+    name: ${{matrix.loader}} ${{matrix.minecraft}} (create ${{matrix.create}})
 
     steps:
       - name: Checkout repository
