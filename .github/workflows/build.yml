@@ -52,7 +52,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/libs/*-${{matrix.loader}}.jar
+            build/libs/*-${{matrix.loader}}-create*.jar
 
       - name: Upload release artifacts to Modrinth
         run: |
