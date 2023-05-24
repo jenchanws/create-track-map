@@ -16,11 +16,12 @@ val mod_version: String by project
 val minecraft_version: String by project
 val maven_group: String by project
 val archives_base_name: String by project
+val create_version_short: String by project
 
 version = mod_version
 group = maven_group
 
-val archives_version = "$mod_version+mc$minecraft_version-forge"
+val archives_version = "$mod_version+mc$minecraft_version-forge-create-$create_version_short"
 
 repositories {
   mavenCentral()
@@ -141,7 +142,7 @@ modrinth {
   token.set(System.getenv("MODRINTH_TOKEN"))
   projectId.set(modrinth_id)
   versionNumber.set(mod_version)
-  versionName.set("CTM Forge $mod_version")
+  versionName.set("CTM Forge $mod_version (Create $create_version_short)")
   gameVersions.add(minecraft_version)
   loaders.add("forge")
   dependencies {
