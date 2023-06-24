@@ -1,7 +1,7 @@
 package littlechasiu.ctm.model
 
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalBlock.SignalType
-import com.simibubi.create.content.logistics.trains.management.edgePoint.signal.SignalTileEntity.SignalState
+import com.simibubi.create.content.trains.signal.SignalBlock.SignalType
+import com.simibubi.create.content.trains.signal.SignalBlockEntity.SignalState
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
