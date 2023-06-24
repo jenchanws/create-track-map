@@ -22,26 +22,15 @@ jobs:
       matrix:
         java: [17]
         minecraft: ["1.19", "1.18"]
+        loader: [fabric, forge]
 
-        include:
-          # FIXME: Build for Create Fabric 0.5.1 when that's out
-          - loader: fabric
-            loader_name: Fabric
-            create: "0.5.0"
-          - loader: forge
-            loader_name: Forge
-            create: "0.5.0"
-          - loader: forge
-            loader_name: Forge
-            create: "0.5.1"
-
-    name: ${{matrix.loader_name}} ${{matrix.minecraft}} (Create ${{matrix.create}})
+    name: ${{matrix.loader}} ${{matrix.minecraft}}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: refs/tags/${{matrix.loader}}-${{matrix.minecraft}}-${{matrix.create}}-${{github.ref_name}}
+          ref: refs/tags/${{matrix.loader}}-${{matrix.minecraft}}-${{github.ref_name}}
 
       - name: Setup Java ${{matrix.java}}
         uses: actions/setup-java@v1
