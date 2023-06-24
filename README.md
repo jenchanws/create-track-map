@@ -32,7 +32,18 @@ map](https://cdn.modrinth.com/data/gxoNIjg6/images/8aa58af4ca9cc459a84ce492770a9
 
 ### Usage
 
-CTM is intended to be a server side mod, but can also run in single-player worlds and LAN servers. It runs a web server, on port 3876 by default, that provides the following API:
+The mod is available for [download on Modrinth](https://modrinth.com/mod/create-track-map). Make sure you download the correct version for your loader, Minecraft version, and Create version. Below is the compatibility chart for Create versions:
+
+| | CTM ≤1.3 | CTM 1.4 | CTM ≥1.5 |
+|:---|:--:|:--:|:--:|
+| **Create 0.5.0** | ✅ | ✅ | ❌ |
+| **Create 0.5.1** | ❌ | ✅ | ✅ |
+
+CTM is intended to be a server side mod, but can also run in single-player worlds and LAN servers. It runs a web server on port 3876 by default, but this can be configured (see the Configuration section below). The map itself is visible at the root (by default `http://localhost:3876/`). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
+
+#### Advanced API
+
+CTM provides the following API, also accessible through the same port:
 
 - `/api/network`, `/api/network.rt`: List of all track pieces and train stations
 - `/api/signals`, `/api/signals.rt`: List of all train signals, including their states
@@ -43,9 +54,7 @@ CTM is intended to be a server side mod, but can also run in single-player world
 - `/api/style.css`: CSS style sheet generated from configured colors and fonts
 - `/api/config.json`: Map configuration
 
-The `.rt` versions update in real time with Server-Sent Events (SSE). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
-
-The map itself is visible at the root (by default `http://localhost:3876/`).
+The `.rt` versions update in real time with Server-Sent Events (SSE).
 
 ### Configuration
 
