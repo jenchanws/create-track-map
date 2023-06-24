@@ -23,20 +23,14 @@ jobs:
         java: [17]
         minecraft: ["1.19", "1.18"]
         loader: [fabric, forge]
-        create: [0.5.0, 0.5.1]
 
-        exclude:
-          # FIXME: Build for Create Fabric 0.5.1 when that's out
-          - loader: fabric
-            create: 0.5.1
-
-    name: ${{matrix.loader}} ${{matrix.minecraft}} (create ${{matrix.create}})
+    name: ${{matrix.loader}} ${{matrix.minecraft}}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: refs/tags/${{matrix.loader}}-${{matrix.minecraft}}-${{matrix.create}}-${{github.ref_name}}
+          ref: refs/tags/${{matrix.loader}}-${{matrix.minecraft}}-${{github.ref_name}}
 
       - name: Setup Java ${{matrix.java}}
         uses: actions/setup-java@v1
@@ -52,7 +46,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/libs/*-${{matrix.loader}}-create*.jar
+            build/libs/*-${{matrix.loader}}.jar
 
       - name: Upload release artifacts to Modrinth
         run: |
