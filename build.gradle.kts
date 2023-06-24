@@ -18,7 +18,7 @@ val create_version_short: String by project
 version = mod_version
 group = maven_group
 
-val archives_version = "$mod_version+mc$minecraft_version-fabric-create-$create_version_short"
+val archives_version = "$mod_version+mc$minecraft_version-fabric"
 
 repositories {
   mavenCentral()
@@ -124,8 +124,8 @@ val modrinth_id: String by project
 modrinth {
   token.set(System.getenv("MODRINTH_TOKEN"))
   projectId.set(modrinth_id)
-  versionNumber.set("$mod_version+create-$create_version_short")
-  versionName.set("CTM Fabric $mod_version (Create $create_version_short)")
+  versionNumber.set("$mod_version")
+  versionName.set("CTM Fabric $mod_version")
   gameVersions.add(minecraft_version)
   loaders.add("fabric")
   dependencies {
