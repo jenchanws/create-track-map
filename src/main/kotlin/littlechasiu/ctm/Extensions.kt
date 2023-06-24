@@ -1,11 +1,11 @@
 package littlechasiu.ctm
 
-import com.simibubi.create.content.logistics.trains.TrackEdge
-import com.simibubi.create.content.logistics.trains.TrackNode
-import com.simibubi.create.content.logistics.trains.TrackNodeLocation
-import com.simibubi.create.content.logistics.trains.entity.Carriage
-import com.simibubi.create.content.logistics.trains.entity.Train
-import com.simibubi.create.content.logistics.trains.entity.TravellingPoint
+import com.simibubi.create.content.trains.entity.Carriage
+import com.simibubi.create.content.trains.entity.Train
+import com.simibubi.create.content.trains.entity.TravellingPoint
+import com.simibubi.create.content.trains.graph.TrackEdge
+import com.simibubi.create.content.trains.graph.TrackNode
+import com.simibubi.create.content.trains.graph.TrackNodeLocation
 import com.simibubi.create.foundation.utility.Couple
 import littlechasiu.ctm.model.*
 import net.minecraft.resources.ResourceKey
@@ -58,7 +58,7 @@ val TravellingPoint.sendable
     if (node1 == null || edge == null) null else
     DimensionLocation(
       dimension = node1.location.dimension.string,
-      location = getPosition().sendable,
+      location = getPosition(null).sendable,
     )
 
 val Carriage.sendable
