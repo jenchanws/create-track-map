@@ -27,7 +27,7 @@ repositories {
   maven("https://mvn.devos.one/snapshots/")  // Create Fabric
   maven("https://api.modrinth.com/maven")  // LazyDFU
   maven("https://maven.tterrag.com/")  // Flywheel
-  maven("https://www.cursemaven.com")  // Forge Config API Port
+  maven("https://cursemaven.com")
 }
 
 val shadowDep: Configuration by configurations.creating
