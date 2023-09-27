@@ -30,6 +30,10 @@ trains are updated in (practically) real time.
 ![Example track 
 map](https://cdn.modrinth.com/data/gxoNIjg6/images/8aa58af4ca9cc459a84ce492770a92e358cd2714.gif)
 
+### READ THIS BEFORE ASKING FOR HELP!
+
+To use this mod, you must be able to open a second port, in addition to your Minecraft server, which CTM will run its web server on. If you are using Aternos, this is not possible. If you are using a shared hosting provider, please contact your host for assistance in opening a port. No support will be provided to open a port or to diagnose issues which are not caused by a bug in the mod.
+
 ### Usage
 
 The mod is available for [download on Modrinth](https://modrinth.com/mod/create-track-map). Make sure you download the correct version for your loader, Minecraft version, and Create version. Below is the compatibility chart for Create versions:
