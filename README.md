@@ -23,30 +23,53 @@
 [![Available on Modrinth](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/modrinth.svg)](https://modrinth.com/mod/create-track-map)
 [![Find me on Discord](https://raw.githubusercontent.com/gist/jenchanws/842eee8428e1e0aec20de4594878156a/raw/0dbefc2fcbec362d14f1689acb807183ceffdbe1/discord.svg)](https://smp.littlechasiu.com/discord)
 
-A multi-loader mod that displays a track map of Create trains in your world,
-including all tracks, signals, stations, and trains. The signals and
-trains are updated in (practically) real time.
+Create Track Map (CTM) is a multi-loader mod that displays a track map of Create trains in your world, including all tracks, signals, stations, and trains. The signals and trains are updated in (practically) real time.
 
-![Example track 
-map](https://cdn.modrinth.com/data/gxoNIjg6/images/8aa58af4ca9cc459a84ce492770a92e358cd2714.gif)
+![Example track map](https://cdn.modrinth.com/data/gxoNIjg6/images/8aa58af4ca9cc459a84ce492770a92e358cd2714.gif)
 
-### READ THIS BEFORE ASKING FOR HELP!
+# Usage
 
-To use this mod, you must be able to open a second port, in addition to your Minecraft server, which CTM will run its web server on. If you are using Aternos, this is not possible. If you are using a shared hosting provider, please contact your host for assistance in opening a port. No support will be provided to open a port or to diagnose issues which are not caused by a bug in the mod.
-
-### Usage
-
-The mod is available for [download on Modrinth](https://modrinth.com/mod/create-track-map). Make sure you download the correct version for your loader, Minecraft version, and Create version. Below is the compatibility chart for Create versions:
+CTM is available for [download on Modrinth](https://modrinth.com/mod/create-track-map). **Please make sure you download the correct version for your loader, Minecraft version, and Create version.** Below is the compatibility chart for Create versions:
 
 | | CTM ≤1.3 | CTM 1.4 | CTM ≥1.5 |
 |:---|:--:|:--:|:--:|
 | **Create 0.5.0** | ✅ | ✅ | ❌ |
 | **Create 0.5.1** | ❌ | ✅ | ✅ |
 
-CTM is intended to be a server side mod, but can also run in single-player worlds and LAN servers. It runs a web server on port 3876 by default, but this can be configured (see the Configuration section below). The map itself is visible at the root (by default `http://localhost:3876/`). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
+## Installation
+Simply place the .jar file in your mods folder (or install with a modloader) like any other mod! CTM is intended to be a server side mod, but can also run in single-player worlds and LAN servers. It runs a web server on port `3876` by default, but [this can be configured](#configuration). You must forward this port if you wish to see the map. *[(How do I do this?)](https://www.google.com/search?q=how+to+I+port+forward)* 
 
-#### Advanced API
+The map itself is visible at the root (by default `http://localhost:3876/`). If using a proxy to serve the map, make sure to configure it to let Server-Sent Events through.
 
+### *Singleplayer*
+The map is hosted on your computer so while Minecraft is open, enter `http://localhost:3876/` into your browser.
+
+### *Multiplayer*
+
+ **A) Local (LAN) server**\
+The map is still hosted on your computer so while the game is open, enter `http://localhost:3876/` into your browser.\
+Those in your household can see the map by entering `http://[your computer's IPV4 address]:3876/` into their browser.\
+*[How do I see my computer's IPV4 address?](https://www.google.com/search?q=how+do+i+see+my+local+ipv4+address)*
+
+**B) The server is on my PC**\
+The map is still hosted on your computer so while the server is open,  enter `http://localhost:3876/` into your browser.\
+Those in your household can see the map by entering `http://[your computer's IPV4 address]:3876/` into their browser.\
+Those outside your household can see the map by entering `http://[your public IPV4 address]:3876/` into their browser.\
+*[How do I see my public IPV4 address?](https://www.google.com/search?q=what+is+my+public+ipv4+address)*
+
+**C) The server is hosted with a hosting service**\
+The map is hosted with the server on that service. You can see the map at `[your server address]:3876/` while the server is up.\
+**NOTE: YOUR SERVICE MUST SUPPORT EXTRA PORT FORWARDING.** You can check with support/the docs for the service or just good old Google. If the service doesn't support this, you are out of luck. You can switch services or try hosting your own.
+
+*Just so it's clear: Do not include the brackets around your IPV4 address! For example: `192.168.0.0:3876`*
+
+## READ THIS BEFORE ASKING FOR HELP!
+
+To use this mod, **you must be able to open a second port**, in addition to your Minecraft server, which CTM will run its web server on. If you are using Aternos, this is not possible. If you are using a shared hosting provider, please contact your host for assistance in opening a port. No support will be provided to open a port or to diagnose issues which are not caused by a bug in the mod.
+
+# Advanced Usage
+
+### CTM API
 CTM provides the following API, also accessible through the same port:
 
 - `/api/network`, `/api/network.rt`: List of all track pieces and train stations
