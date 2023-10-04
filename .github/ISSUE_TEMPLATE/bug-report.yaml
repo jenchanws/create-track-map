@@ -135,7 +135,7 @@ body:
                 - "1.19.1"
         validations:
             required: true
--   type: dropdown
+    -   type: dropdown
         attributes:
             label: Mod Loader
             description: The mod loader you were using when the bug occured
