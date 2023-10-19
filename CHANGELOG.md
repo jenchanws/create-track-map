@@ -1,1 +1,1 @@
-- Added support for Create 0.5.1 on Fabric.
+- Added support for Minecraft 1.20.1.

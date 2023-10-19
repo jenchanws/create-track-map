@@ -128,6 +128,7 @@ modrinth {
   versionName.set("CTM Fabric $mod_version")
   gameVersions.add(minecraft_version)
   loaders.add("fabric")
+  loaders.add("quilt")
   dependencies {
     required.project("create-fabric")
     required.project("fabric-api")
