@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         java: [17]
-        minecraft: ["1.19", "1.18"]
+        minecraft: ["1.19", "1.20"]
         loader: [fabric, forge]
 
     name: ${{matrix.loader}} ${{matrix.minecraft}}
