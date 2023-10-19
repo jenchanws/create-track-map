@@ -7,7 +7,7 @@ plugins {
   kotlin("jvm") version "1.8.10"
   kotlin("plugin.serialization") version "1.8.10"
   java
-  id("net.minecraftforge.gradle") version "6.+"
+  id("net.neoforged.gradle") version "[6.0.13, 6.2)"
   id("com.github.johnrengelman.shadow") version "7.1.2"
   id("com.modrinth.minotaur") version "2.+"
 }
@@ -21,7 +21,7 @@ val create_version_short: String by project
 version = mod_version
 group = maven_group
 
-val archives_version = "$mod_version+mc$minecraft_version-forge"
+val archives_version = "$mod_version+mc$minecraft_version-neoforge"
 
 repositories {
   mavenCentral()
@@ -52,7 +52,7 @@ minecraft {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+  minecraft("net.neoforged:forge:${minecraft_version}-${forge_version}")
   implementation("thedarkcolour:kotlinforforge:$forge_kotlin_version")
   implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim"))
 
@@ -143,9 +143,9 @@ modrinth {
   token.set(System.getenv("MODRINTH_TOKEN"))
   projectId.set(modrinth_id)
   versionNumber.set("$mod_version")
-  versionName.set("CTM Forge $mod_version")
+  versionName.set("CTM NeoForge $mod_version")
   gameVersions.add(minecraft_version)
-  loaders.add("forge")
+  loaders.add("neoforge")
   dependencies {
     required.project("create")
     required.project("kotlin-for-forge")
