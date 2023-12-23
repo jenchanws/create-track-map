@@ -121,6 +121,11 @@ tasks {
       exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
       exclude(dependency("org.slf4j:.*"))
     }
+    relocate("com.typesafe.config", "littlechasiu.ctm.com.typesafe.config")
+    relocate("org.fusesource.jansi", "littlechasiu.ctm.org.fusesource.jansi")
+
+
+
     configurations = listOf(shadowDep)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   }
