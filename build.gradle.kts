@@ -56,7 +56,6 @@ dependencies {
   shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cors-jvm:$ktor_version")
-  shadowDep("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
   shadowDep("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
 }
 
@@ -97,6 +96,15 @@ tasks {
       exclude(dependency("org.jetbrains.kotlinx:kotlinx-coroutines-.*"))
       exclude(dependency("org.slf4j:.*"))
     }
+
+    fun relocate(origin: String) = relocate(origin, "littlechasiu.ctm.dependencies.$origin")
+    relocate("com.typesafe.config")
+    relocate("org.fusesource.jansi")
+    relocate("kotlinx.css")
+    relocate("io.ktor")
+    relocate("org.intellij.lang.annotations")
+    relocate("org.jetbrains.annotations")
+
     configurations = listOf(shadowDep)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   }
