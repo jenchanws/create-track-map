@@ -22,7 +22,7 @@ val archives_version = "$mod_version+mc$minecraft_version-fabric"
 
 repositories {
   mavenCentral()
-  maven("https://jitpack.io")  // MixinExtras, Fabric ASM
+  maven("https://jitpack.io")  // MixinExtras, Fabric ASM, BlueMap API
   maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
   maven("https://mvn.devos.one/snapshots/")  // Create Fabric
   maven("https://api.modrinth.com/maven")  // LazyDFU
@@ -56,8 +56,10 @@ dependencies {
   shadowDep("io.ktor:ktor-server-core-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cio-jvm:$ktor_version")
   shadowDep("io.ktor:ktor-server-cors-jvm:$ktor_version")
-  shadowDep("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
   shadowDep("org.jetbrains.kotlin-wrappers:kotlin-css:$kotlin_css_version")
+
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
+  compileOnly("com.github.BlueMap-Minecraft:BlueMapAPI:v2.5.1")
 }
 
 val targetJavaVersion = 17
