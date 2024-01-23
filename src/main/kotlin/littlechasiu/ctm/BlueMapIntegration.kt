@@ -233,6 +233,7 @@ object BlueMapIntegration {
                       .add(vecPoints[1].mul(3.0 * u2 * t))
                       .add(vecPoints[2].mul(3.0 * u * t2))
                       .add(vecPoints[3].mul(t3))
+                      .mul(1000.0).round().div(1000.0) // truncate to 3 decimal places
             }
   }
 
