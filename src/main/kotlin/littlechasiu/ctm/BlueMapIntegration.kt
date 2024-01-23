@@ -16,6 +16,8 @@ import littlechasiu.ctm.model.*
 object BlueMapIntegration {
   var mapStyle = MapStyle()
 
+  private const val BLUEMAP_TRACK_CURVE_POINTS = 10
+
   private const val BLUEMAP_TRACK_LABEL = "Create Track"
   private const val BLUEMAP_TRACK_ID = "create-track"
   private const val BLUEMAP_STATION_LABEL = "Create Station"
@@ -216,6 +218,24 @@ object BlueMapIntegration {
     return CSS_NAMED_COLORS.getOrDefault(cssColor, "#000")
   }
 
+  private fun bezierPoints(points: List<Point>, yOffset: Int, numPoints: Int): List<Vector3d> {
+    // https://denisrizov.com/2016/06/02/bezier-curves-unity-package-included/
+    val vecPoints = points.map { Vector3d(it.x, it.y + yOffset, it.z) }
+    return (0 until numPoints)
+            .map { it.toFloat() / numPoints }
+            .map { t ->
+              val u = 1.0 - t
+              val t2 = t * t
+              val u2 = u * u
+              val t3 = t2 * t
+              val u3 = u2 * u
+              (vecPoints[0].mul(u3))
+                      .add(vecPoints[1].mul(3.0 * u2 * t))
+                      .add(vecPoints[2].mul(3.0 * u * t2))
+                      .add(vecPoints[3].mul(t3))
+            }
+  }
+
   private fun updateTrack(blueMap: BlueMapAPI, track: Edge) {
     val markerBuilder = LineMarker
       .builder()
@@ -223,10 +243,8 @@ object BlueMapIntegration {
       .lineWidth(2)
 
     if (track.path.size == 4) {
-      // TODO: make curves work somehow
-      val pt0 = Vector3d(track.path[0].x, track.path[0].y + 1, track.path[0].z)
-      val pt3 = Vector3d(track.path[3].x, track.path[3].y + 1, track.path[3].z)
-      markerBuilder.line(Line(pt0, pt3))
+      // TODO: use HtmlMarker + svg for smooth curves?
+      markerBuilder.line(Line(bezierPoints(track.path, 1, BLUEMAP_TRACK_CURVE_POINTS)))
     } else {
       val pt0 = Vector3d(track.path[0].x, track.path[0].y + 1, track.path[0].z)
       val pt1 = Vector3d(track.path[1].x, track.path[1].y + 1, track.path[1].z)
