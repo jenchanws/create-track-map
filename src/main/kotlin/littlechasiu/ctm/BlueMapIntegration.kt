@@ -221,7 +221,7 @@ object BlueMapIntegration {
   private fun bezierPoints(points: List<Point>, yOffset: Int, numPoints: Int): List<Vector3d> {
     // https://denisrizov.com/2016/06/02/bezier-curves-unity-package-included/
     val vecPoints = points.map { Vector3d(it.x, it.y + yOffset, it.z) }
-    return (0 until numPoints)
+    return (0..numPoints)
             .map { it.toFloat() / numPoints }
             .map { t ->
               val u = 1.0 - t
