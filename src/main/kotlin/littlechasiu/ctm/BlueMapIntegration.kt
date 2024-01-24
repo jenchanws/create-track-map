@@ -1,6 +1,7 @@
 package littlechasiu.ctm
 
 import com.flowpowered.math.vector.Vector3d
+import com.flowpowered.math.vector.Vector3l
 import com.simibubi.create.content.trains.signal.SignalBlockEntity
 import de.bluecolored.bluemap.api.BlueMapAPI
 import de.bluecolored.bluemap.api.BlueMapMap
@@ -179,6 +180,14 @@ object BlueMapIntegration {
     "yellowgreen" to "#9acd32",
   )
 
+  data class IntEdge(
+          val dimension: String,
+          val path: List<Vector3l>
+  ) {
+    constructor(edge: Edge):
+      this(edge.dimension, edge.path.map { Vector3l(it.x * 10000, it.y * 10000, it.z * 10000 )})
+  }
+
   private fun getMarkerSet(map: BlueMapMap, id: String, label: String): MarkerSet {
     val mapMarkerSet = map.markerSets[id]
     val markerSet: MarkerSet
@@ -237,25 +246,63 @@ object BlueMapIntegration {
             }
   }
 
-  private fun updateTrack(blueMap: BlueMapAPI, track: Edge) {
-    val markerBuilder = LineMarker
-      .builder()
-      .label(BLUEMAP_TRACK_LABEL)
-      .lineWidth(2)
-
-    if (track.path.size == 4) {
-      // TODO: use HtmlMarker + svg for smooth curves?
-      markerBuilder.line(Line(bezierPoints(track.path, 1, BLUEMAP_TRACK_CURVE_POINTS)))
-    } else {
-      val pt0 = Vector3d(track.path[0].x, track.path[0].y + 1, track.path[0].z)
-      val pt1 = Vector3d(track.path[1].x, track.path[1].y + 1, track.path[1].z)
-      markerBuilder.line(Line(pt0, pt1))
+  private fun updateTracks(blueMap: BlueMapAPI, tracks: List<Edge>) {
+    // the edges provided by TrackMap contains various duplicates in different directions
+    // to optimize this we normalize them into one direction and remove overlaps as much as possible
+    // there was a problem finding duplicates due to double's precision so each edge was truncated to 4 decimal places
+    // TODO: fix z-fighting due to overlapping sections
+    val intEdges = emptySet<IntEdge>().toMutableSet()
+    val sortedEdges = emptyList<Edge>().toMutableList()
+    for (edge in tracks) {
+      val first = edge.path.first()
+      val last = edge.path.last()
+      val normalizedEdge = if (first.x > last.x || first.y > last.y || first.z > last.z) Edge(edge.dimension, edge.path.reversed()) else edge
+      if (intEdges.add(IntEdge(normalizedEdge)))
+        sortedEdges.add(normalizedEdge)
     }
+    sortedEdges.sortWith(compareBy({ it.dimension }, { it.path[0].x }, { it.path[0].y }, { it.path[0].z }))
 
-    blueMap.getWorld(track.dimension).ifPresent { world ->
-      for (map in world.maps) {
-        val markerSet = getMarkerSet(map, BLUEMAP_TRACK_ID, BLUEMAP_TRACK_LABEL)
-        markerSet.markers[BLUEMAP_TRACK_ID + "-" + markerSet.markers.size] = markerBuilder.build()
+    // optimize the paths by merging adjacent paths as much as possible
+    var lineBuilder = Line.builder()
+    var lineCount = 0
+    sortedEdges.forEachIndexed { index, edge ->
+      val nextEdge: Edge? = sortedEdges.elementAtOrNull(index + 1)
+      val points = if (edge.path.size == 4) bezierPoints(edge.path, 1, BLUEMAP_TRACK_CURVE_POINTS)
+      else edge.path.map { Vector3d(it.x, it.y + 1, it.z) }
+
+      // add the path (only the starting point for straight paths)
+      if (edge.path.size == 4) {
+        lineBuilder.addPoints(*points.toTypedArray())
+        lineCount += points.size
+      } else if (lineCount == 0) {
+        lineBuilder.addPoint(points.first())
+        lineCount++
+      }
+
+      // end the path if not adjacent or this is the last edge
+      if (nextEdge == null || edge.dimension != nextEdge.dimension || edge.path.last() != nextEdge.path.first()) {
+        if (edge.path.size != 4) {
+          lineBuilder.addPoint(points.last())
+          lineCount++
+        }
+
+        if (lineCount > 1) {
+          val markerBuilder = LineMarker
+                  .builder()
+                  .label(BLUEMAP_TRACK_LABEL)
+                  .lineWidth(2)
+                  .line(lineBuilder.build())
+
+          blueMap.getWorld(edge.dimension).ifPresent { world ->
+            for (map in world.maps) {
+              val markerSet = getMarkerSet(map, BLUEMAP_TRACK_ID, BLUEMAP_TRACK_LABEL)
+              markerSet.markers[BLUEMAP_TRACK_ID + "-" + markerSet.markers.size] = markerBuilder.build()
+            }
+          }
+        }
+
+        lineBuilder = Line.builder()
+        lineCount = 0
       }
     }
   }
@@ -365,9 +412,7 @@ object BlueMapIntegration {
         map.markerSets.remove(BLUEMAP_SIGNAL_ID)
       }
 
-      for (track in TrackMap.network.tracks) {
-        updateTrack(blueMap, track)
-      }
+      updateTracks(blueMap, TrackMap.network.tracks)
 
       for (station in TrackMap.network.stations) {
         updateStation(blueMap, station)
