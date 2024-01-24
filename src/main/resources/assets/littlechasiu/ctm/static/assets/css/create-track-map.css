@@ -79,6 +79,29 @@ body {
   fill: var(--lead-car-color);
 }
 
+.train-schedule {
+  margin: 0;
+  padding-left: 1rem;
+  list-style-type: none;
+}
+.train-schedule .train-schedule-current {
+  list-style-type: disc;
+}
+
+.station-schedule,
+.station-schedule th,
+.station-schedule td {
+  border: 1px solid currentColor;
+  border-collapse: collapse;
+}
+.station-schedule th,
+.station-schedule td {
+  padding: .2rem .5rem;
+}
+.station-schedule td {
+  font-weight: normal;
+}
+
 .coords-control {
   font-family: var(--ui-font);
   font-size: 16px;

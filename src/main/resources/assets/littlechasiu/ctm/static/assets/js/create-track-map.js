@@ -97,31 +97,33 @@ function startMapUpdates() {
 
     stations.forEach((stn) => {
       const scheduleHtml =
-        stn.summary.map((entry) => {
-          let time = "";
+        "<table class=\"station-schedule\"><thead><tr><th>Due</th><th>Train</th><th>Destination</th></tr></thead><tbody>" +
+          stn.summary.map((entry) => {
+            let time = "";
 
-          if (entry.ticks === -1 || entry.ticks >= 12000 - 15 * 20) {
-            time = "later"
-          } else if (entry.ticks < 200) {
-            time = "now"
-          } else {
-            time = "in "
+            if (entry.ticks === -1 || entry.ticks >= 12000 - 15 * 20) {
+              time = "later"
+            } else if (entry.ticks < 200) {
+              time = "now"
+            } else {
+              time = "in "
 
-            let min = Math.floor(entry.ticks / 1200)
-            let sec = Math.floor(entry.ticks / 20) % 60
-            sec = Math.ceil(sec / 15) * 15
-            
-            if (sec === 60) {
-              min++
-              sec = 0
-            }
+              let min = Math.floor(entry.ticks / 1200)
+              let sec = Math.floor(entry.ticks / 20) % 60
+              sec = Math.ceil(sec / 15) * 15
 
-            time += min > 0 ? min : sec;
-            time += min > 0 ? "mins" : "secs";
-          }  
+              if (sec === 60) {
+                min++
+                sec = 0
+              }
 
-          return `<div>Due ${time} | ${entry.trainName} | ${entry.scheduleTitle}</div>`;
-        }).join("");
+              time += min > 0 ? min : sec;
+              time += min > 0 ? "mins" : "secs";
+            }  
+
+            return `<tr><td>${time}</td><td>${htmlEscape(entry.trainName)}</td><td>${htmlEscape(entry.scheduleTitle)}</td></tr>`;
+          }).join("") +
+          "</tbody></table>";
 
       L.marker(xz(stn.location), {
         icon: stationIcon,
@@ -235,11 +237,16 @@ function startMapUpdates() {
 
         const scheduleHtml =
           train.schedule ?
-          train.schedule.entries.map((entry, i) => {
-            let entryHtml = train.schedule.currentEntry === i ? "> " : "";
-            if (entry.instruction.destination) entryHtml += htmlEscape(entry.instruction.destination);
-            return `<div>${entryHtml}</div>`;
-          }).join("\n") :
+            "<ul class=\"train-schedule\">" +
+              train.schedule.entries.map((entry, i) => {
+                let entryHtml = "";
+                const className = train.schedule.currentEntry === i ? "train-schedule-current" : ""
+
+                if (entry.instruction.destination) entryHtml += htmlEscape(entry.instruction.destination);
+
+                return `<li class="${className}">${entryHtml}</div>`;
+              }).join("\n") +
+              "</ul>" :
           "";
 
         parts.map(([dim, part]) =>
