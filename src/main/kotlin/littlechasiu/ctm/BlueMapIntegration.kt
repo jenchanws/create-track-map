@@ -180,14 +180,6 @@ object BlueMapIntegration {
     "yellowgreen" to "#9acd32",
   )
 
-  data class IntEdge(
-          val dimension: String,
-          val path: List<Vector3l>
-  ) {
-    constructor(edge: Edge):
-      this(edge.dimension, edge.path.map { Vector3l(it.x * 10000, it.y * 10000, it.z * 10000 )})
-  }
-
   private fun getMarkerSet(map: BlueMapMap, id: String, label: String): MarkerSet {
     val mapMarkerSet = map.markerSets[id]
     val markerSet: MarkerSet
@@ -227,11 +219,12 @@ object BlueMapIntegration {
     return CSS_NAMED_COLORS.getOrDefault(cssColor, "#000")
   }
 
-  private fun bezierPoints(points: List<Point>, yOffset: Int, numPoints: Int): List<Vector3d> {
+  private fun bezier(points: List<Point>): MutableList<Vector3d> {
     // https://denisrizov.com/2016/06/02/bezier-curves-unity-package-included/
-    val vecPoints = points.map { Vector3d(it.x, it.y + yOffset, it.z) }
-    return (0..numPoints)
-            .map { it.toFloat() / numPoints }
+    val vecPoints = points.map { Vector3d(it.x, it.y + 1, it.z) }
+    return (0..BLUEMAP_TRACK_CURVE_POINTS)
+            .asSequence()
+            .map { it.toFloat() / BLUEMAP_TRACK_CURVE_POINTS }
             .map { t ->
               val u = 1.0 - t
               val t2 = t * t
@@ -244,65 +237,80 @@ object BlueMapIntegration {
                       .add(vecPoints[3].mul(t3))
                       .mul(1000.0).round().div(1000.0) // truncate to 3 decimal places
             }
+            .toMutableList()
+  }
+
+  private fun getUnitVector(a: Vector3d, b: Vector3d): Vector3d {
+    return a.sub(b).normalize()
+  }
+
+  private fun mergeLines(input: MutableList<MutableList<Vector3d>>) {
+    val lineIterator = input.listIterator()
+    var prevLine: MutableList<Vector3d>? = null
+    while (lineIterator.hasNext()) {
+      val currentLine = lineIterator.next()
+      // lines are adjacent, try to merge
+      if (prevLine != null && prevLine.last() == currentLine.first()) {
+        // if both lines are heading to the same direction, we can omit the midpoint when joining
+        if (getUnitVector(prevLine[prevLine.size - 2], prevLine[prevLine.size - 1]) == getUnitVector(currentLine[0], currentLine[1])) {
+          prevLine.removeLast()
+        }
+        prevLine.addAll(currentLine)
+        lineIterator.remove()
+      } else {
+        prevLine = currentLine
+      }
+    }
   }
 
   private fun updateTracks(blueMap: BlueMapAPI, tracks: List<Edge>) {
-    // the edges provided by TrackMap contains various duplicates in different directions
-    // to optimize this we normalize them into one direction and remove overlaps as much as possible
-    // there was a problem finding duplicates due to double's precision so each edge was truncated to 4 decimal places
-    // TODO: fix z-fighting due to overlapping sections
-    val intEdges = emptySet<IntEdge>().toMutableSet()
-    val sortedEdges = emptyList<Edge>().toMutableList()
-    for (edge in tracks) {
-      val first = edge.path.first()
-      val last = edge.path.last()
-      val normalizedEdge = if (first.x > last.x || first.y > last.y || first.z > last.z) Edge(edge.dimension, edge.path.reversed()) else edge
-      if (intEdges.add(IntEdge(normalizedEdge)))
-        sortedEdges.add(normalizedEdge)
-    }
-    sortedEdges.sortWith(compareBy({ it.dimension }, { it.path[0].x }, { it.path[0].y }, { it.path[0].z }))
+    val dimensions = tracks.groupBy { it.dimension }
+    dimensions.forEach { (dimension, edges) ->
+      blueMap.getWorld(dimension).ifPresent { world ->
+        // CTM tracks has tiny, overlapping segments, sometimes in both directions, which slows down BlueMap
+        // We normalize all the lines in one direction, filter out points due to precision issues, render
+        // Bézier curves into straight lines, sort them based on starting / ending points and merge them.
+        // FIXME: severe Z-fighting due to large amount of overlapping segments
+        val lines = edges
+                .asSequence()
+                .map { edge ->
+                  // normalize paths to point in +ve
+                  val first = edge.path.first()
+                  val last = edge.path.last()
+                  if (first.x > last.x || first.y > last.y || first.z > last.z) {
+                    edge.path.asReversed()
+                  } else {
+                    edge.path
+                  }
+                }
+                .distinctBy { it.map { p -> Vector3l(p.x * 10000, p.y * 10000, p.z * 10000) } }
+                .map {path ->
+                  when (path.size) {
+                    4 -> bezier(path)
+                    2 -> path.asSequence().map { Vector3d(it.x, it.y + 1, it.z) }.toMutableList()
+                    else -> throw IllegalStateException("unsupported edge type")
+                  }
+                }
+                .toMutableList()
 
-    // optimize the paths by merging adjacent paths as much as possible
-    var lineBuilder = Line.builder()
-    var lineCount = 0
-    sortedEdges.forEachIndexed { index, edge ->
-      val nextEdge: Edge? = sortedEdges.elementAtOrNull(index + 1)
-      val points = if (edge.path.size == 4) bezierPoints(edge.path, 1, BLUEMAP_TRACK_CURVE_POINTS)
-      else edge.path.map { Vector3d(it.x, it.y + 1, it.z) }
+        // your mileage may vary
+        lines.sortWith(compareBy({ it.last().x }, { it.last().y }, { it.last().z }))
+        mergeLines(lines)
+        lines.sortWith(compareBy({ it[0].x }, { it[0].y }, { it[0].z }))
+        mergeLines(lines)
 
-      // add the path (only the starting point for straight paths)
-      if (edge.path.size == 4) {
-        lineBuilder.addPoints(*points.toTypedArray())
-        lineCount += points.size
-      } else if (lineCount == 0) {
-        lineBuilder.addPoint(points.first())
-        lineCount++
-      }
-
-      // end the path if not adjacent or this is the last edge
-      if (nextEdge == null || edge.dimension != nextEdge.dimension || edge.path.last() != nextEdge.path.first()) {
-        if (edge.path.size != 4) {
-          lineBuilder.addPoint(points.last())
-          lineCount++
-        }
-
-        if (lineCount > 1) {
+        for (line in lines) {
           val markerBuilder = LineMarker
                   .builder()
                   .label(BLUEMAP_TRACK_LABEL)
                   .lineWidth(2)
-                  .line(lineBuilder.build())
+                  .line(Line(line))
 
-          blueMap.getWorld(edge.dimension).ifPresent { world ->
-            for (map in world.maps) {
-              val markerSet = getMarkerSet(map, BLUEMAP_TRACK_ID, BLUEMAP_TRACK_LABEL)
-              markerSet.markers[BLUEMAP_TRACK_ID + "-" + markerSet.markers.size] = markerBuilder.build()
-            }
+          for (map in world.maps) {
+            val markerSet = getMarkerSet(map, BLUEMAP_TRACK_ID, BLUEMAP_TRACK_LABEL)
+            markerSet.markers[BLUEMAP_TRACK_ID + "-" + markerSet.markers.size] = markerBuilder.build()
           }
         }
-
-        lineBuilder = Line.builder()
-        lineCount = 0
       }
     }
   }
