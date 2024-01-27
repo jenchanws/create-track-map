@@ -99,7 +99,7 @@ function startMapUpdates() {
       const scheduleHtml =
         "<table class=\"station-schedule\"><thead><tr><th>Due</th><th>Train</th><th>Destination</th></tr></thead><tbody>" +
           stn.summary.map((entry) => {
-            let time = "";
+            let time
 
             if (entry.ticks === -1 || entry.ticks >= 12000 - 15 * 20) {
               time = "later"
@@ -123,7 +123,7 @@ function startMapUpdates() {
 
             return `<tr><td>${time}</td><td>${htmlEscape(entry.trainName)}</td><td>${htmlEscape(entry.scheduleTitle)}</td></tr>`;
           }).join("") +
-          "</tbody></table>";
+          "</tbody></table>"
 
       L.marker(xz(stn.location), {
         icon: stationIcon,
@@ -244,7 +244,7 @@ function startMapUpdates() {
 
                 if (entry.instruction.destination) entryHtml += htmlEscape(entry.instruction.destination);
 
-                return `<li class="${className}">${entryHtml}</div>`;
+                return `<li class="${className}">${entryHtml}</li>`;
               }).join("\n") +
               "</ul>" :
           "";

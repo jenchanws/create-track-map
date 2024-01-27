@@ -14,6 +14,7 @@ import de.bluecolored.bluemap.api.math.Line
 import de.bluecolored.bluemap.api.math.Shape
 import littlechasiu.ctm.model.*
 import kotlin.math.min
+import kotlin.math.ceil
 
 object BlueMapIntegration {
   var mapStyle = MapStyle()
@@ -349,15 +350,44 @@ object BlueMapIntegration {
   }
 
   private fun updateStation(blueMap: BlueMapAPI, station: Station) {
+    val scheduleHtml = "<ol style=\"margin: 0;padding: 1rem;list-style-position: outside;max-width: 14em;\">" +
+      station.summary.joinToString(separator = "") {
+        var time: String
+
+        if (it.ticks == -1 || it.ticks >= 12000 - 15 * 20) {
+          time = "later"
+        } else if (it.ticks < 200) {
+          time = "now"
+        } else {
+          time = "in "
+
+          var min = it.ticks.floorDiv(1200)
+          var sec = it.ticks.floorDiv(20) % 60
+          sec = ceil(sec / 15f).toInt() * 15
+
+          if (sec == 60) {
+            min += 1
+            sec = 0
+          }
+
+          time += if (min > 0) min else sec
+          time += if (min > 0) "mins" else "secs"
+        }
+
+        "<li>Due: $time, Train: ${htmlEscape(it.trainName)}, Destination: ${htmlEscape(it.scheduleTitle)}</li>"
+      } +
+      "</ol>"
+
     val marker = POIMarker
       .builder()
       .label(station.name)
       .detail(
         "<div style=\"width: max-content\">" +
-          "<div>Name: " + htmlEscape(station.name) + "</div>" +
+          "<div>" + htmlEscape(station.name) + "</div>" +
           "<div>Facing: <span style=\"transform: rotateZ(" + station.angle + "deg);display: inline-block;vertical-align: middle;\">" +
           "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"16\" width=\"12\" viewBox=\"0 0 384 512\"><path d=\"M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z\" fill=\"currentColor\"></svg>" +
           "</span></div>" +
+          scheduleHtml +
           "</div>"
       )
       .position(station.location.x, station.location.y, station.location.z)
@@ -372,7 +402,7 @@ object BlueMapIntegration {
   }
 
   private fun updateTrain(blueMap: BlueMapAPI, train: CreateTrain) {
-    for (car in train.cars) {
+    for ((i, car) in train.cars.withIndex()) {
       val pt0 = Vector3d(
         getDefault(car.leading?.location?.x, 0.0),
         getDefault(car.leading?.location?.y, 0.0),
@@ -383,9 +413,32 @@ object BlueMapIntegration {
         getDefault(car.trailing?.location?.y, 0.0),
         getDefault(car.trailing?.location?.z, 0.0)
       )
+
+      val scheduleHtml =
+        if (train.schedule != null)
+          "<ul>" +
+            train.schedule.entries.mapIndexed { entryIndex, entry ->
+              var entryHtml = ""
+              val style = if (train.schedule.currentEntry == entryIndex) "" else "list-style-type: none"
+
+              if (entry.instruction.destination != null) entryHtml += htmlEscape(entry.instruction.destination)
+
+              if (entryHtml == "") return@mapIndexed ""
+              "<li style=\"$style\">$entryHtml</li>"
+            }.joinToString(separator = "") +
+            "</ul>"
+        else
+          ""
+
       val marker = LineMarker
         .builder()
-        .label(train.name)
+        .label(
+          if (train.cars.size == 1)
+            train.name
+          else
+            "${train.name} (${i + 1})"
+        )
+        .detail("<div>${htmlEscape(train.name)} (${i + 1})</div>$scheduleHtml")
         .lineColor(Color(getCssColor(mapStyle.colors.train)))
         .lineWidth(12)
         .line(Line(pt0, pt1))
