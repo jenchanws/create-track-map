@@ -13,7 +13,6 @@ import de.bluecolored.bluemap.api.math.Color
 import de.bluecolored.bluemap.api.math.Line
 import de.bluecolored.bluemap.api.math.Shape
 import littlechasiu.ctm.model.*
-import kotlin.math.min
 import kotlin.math.ceil
 
 object BlueMapIntegration {
@@ -199,12 +198,13 @@ object BlueMapIntegration {
     }
 
     fun merge(line: BlueMapLine): Boolean {
-      if (tomb || line.tomb || path.last() != line.path.first()) return false
+      if (tomb || line.tomb || path == line.path || path.last() != line.path.first()) return false
       // if both lines are heading to the same direction, we can omit the midpoint when joining
       if (unitVector(path[path.size - 2], path[path.size - 1]) == unitVector(line.path[0], line.path[1])) {
         mutablePath.removeLast()
       }
       mutablePath.addAll(line.path)
+      line.tomb = true
       updateLongPath()
       return true
     }
@@ -290,15 +290,19 @@ object BlueMapIntegration {
     return CSS_NAMED_COLORS.getOrDefault(cssColor, "#000")
   }
 
-  private fun mergeLines(lines: MutableList<BlueMapLine>, lookahead: Int) {
-    for (i in lines.indices) {
-      val line = lines[i]
-      if (line.tomb) continue
-      for (j in i + 1..i + lookahead) {
-        val nextLine = lines.getOrNull(j) ?: break
-        if (nextLine.tomb) continue
-        if (line.merge(nextLine))
-          nextLine.tomb = true
+  private fun mergeLines(lines: MutableList<BlueMapLine>) {
+    val points = lines.groupByTo(mutableMapOf()) { it.path[0] }
+    for (line in lines) {
+      while (true) {
+        val key = line.path.last()
+        val adjacentLines = points[key] ?: break
+        val mergedLine = adjacentLines.indexOfFirst { line.merge(it) }
+        if (mergedLine != -1) {
+          adjacentLines.removeAt(mergedLine)
+          if (adjacentLines.isEmpty()) points.remove(key)
+        } else {
+          break
+        }
       }
     }
     lines.removeIf { it.tomb }
@@ -329,9 +333,7 @@ object BlueMapIntegration {
 
         // your mileage may vary
         lines.sortWith(compareBy({ it.path[0].x }, { it.path[0].y }, { it.path[0].z }))
-        // The merging algorithm performs a lookahead search (defaults to 8 paths)
-        // which significantly improves merging for maps with parallel tracks
-        mergeLines(lines, min(lines.size / 2, 8))
+        mergeLines(lines)
 
         for (line in lines) {
           val markerBuilder = LineMarker
