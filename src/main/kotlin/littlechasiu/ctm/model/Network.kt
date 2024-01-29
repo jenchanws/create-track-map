@@ -57,6 +57,14 @@ data class Portal(
 )
 
 @Serializable
+data class StationSummaryEntry(
+  val scheduleTitle: String,
+  val destination: String,
+  val trainName: String,
+  val ticks: Int,
+)
+
+@Serializable
 data class Station(
   @Serializable(with = UUIDSerializer::class)
   val id: UUID,
@@ -65,6 +73,7 @@ data class Station(
   val location: Point,
   val angle: Double,
   val assembling: Boolean,
+  val summary: List<StationSummaryEntry>,
 )
 
 @Serializable
@@ -129,6 +138,7 @@ data class CreateTrain(
   val cars: List<TrainCar>,
   val backwards: Boolean,
   val stopped: Boolean,
+  val schedule: CreateSchedule?,
 )
 
 @Serializable

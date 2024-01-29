@@ -60,6 +60,15 @@ fetch("api/config.json")
     startMapUpdates()
   })
 
+function htmlEscape(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+}
+
 function startMapUpdates() {
   const dmgr = new DataManager()
 
@@ -87,12 +96,41 @@ function startMapUpdates() {
     })
 
     stations.forEach((stn) => {
+      const scheduleHtml =
+        "<table class=\"station-schedule\"><thead><tr><th>Due</th><th>Train</th><th>Destination</th></tr></thead><tbody>" +
+          stn.summary.map((entry) => {
+            let time
+
+            if (entry.ticks === -1 || entry.ticks >= 12000 - 15 * 20) {
+              time = "later"
+            } else if (entry.ticks < 200) {
+              time = "now"
+            } else {
+              time = "in "
+
+              let min = Math.floor(entry.ticks / 1200)
+              let sec = Math.floor(entry.ticks / 20) % 60
+              sec = Math.ceil(sec / 15) * 15
+
+              if (sec === 60) {
+                min++
+                sec = 0
+              }
+
+              time += min > 0 ? min : sec;
+              time += min > 0 ? "mins" : "secs";
+            }  
+
+            return `<tr><td>${time}</td><td>${htmlEscape(entry.trainName)}</td><td>${htmlEscape(entry.scheduleTitle)}</td></tr>`;
+          }).join("") +
+          "</tbody></table>"
+
       L.marker(xz(stn.location), {
         icon: stationIcon,
         rotationAngle: stn.angle,
         pane: "stations",
       })
-        .bindTooltip(stn.name, {
+        .bindTooltip(stn.name + scheduleHtml, {
           className: "station-name",
           direction: "top",
           offset: L.point(0, -12),
@@ -197,6 +235,20 @@ function startMapUpdates() {
             ]
           : [[car.leading.dimension, [xz(car.leading.location), xz(car.trailing.location)]]]
 
+        const scheduleHtml =
+          train.schedule ?
+            "<ul class=\"train-schedule\">" +
+              train.schedule.entries.map((entry, i) => {
+                let entryHtml = "";
+                const className = train.schedule.currentEntry === i ? "train-schedule-current" : ""
+
+                if (entry.instruction.destination) entryHtml += htmlEscape(entry.instruction.destination);
+
+                return `<li class="${className}">${entryHtml}</li>`;
+              }).join("\n") +
+              "</ul>" :
+          "";
+
         parts.map(([dim, part]) =>
           L.polyline(part, {
             weight: 12,
@@ -205,9 +257,9 @@ function startMapUpdates() {
             pane: "trains",
           })
             .bindTooltip(
-              train.cars.length === 1
+              (train.cars.length === 1
                 ? train.name
-                : `${train.name} <span class="car-number">${i + 1}</span>`,
+                : `${train.name} <span class="car-number">${i + 1}</span>`) + scheduleHtml,
               {
                 className: "train-name",
                 direction: "right",

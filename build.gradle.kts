@@ -25,7 +25,7 @@ val archives_version = "$mod_version+mc$minecraft_version-neoforge"
 
 repositories {
   mavenCentral()
-  maven("https://jitpack.io")  // MixinExtras, Fabric ASM
+  maven("https://jitpack.io")  // MixinExtras, Fabric ASM, BlueMap API
   maven("https://maven.jamieswhiteshirt.com/libs-release")  // Reach Entity Attributes
   maven("https://api.modrinth.com/maven")  // LazyDFU
   maven("https://maven.tterrag.com/")  // Create Forge, Flywheel
@@ -63,6 +63,7 @@ dependencies {
 
   // included in Kotlin for Forge
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_json_version")
+  compileOnly("com.github.BlueMap-Minecraft:BlueMapAPI:v2.5.1")
 }
 
 val targetJavaVersion = 17
