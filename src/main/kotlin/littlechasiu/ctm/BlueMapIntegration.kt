@@ -14,6 +14,8 @@ import de.bluecolored.bluemap.api.math.Line
 import de.bluecolored.bluemap.api.math.Shape
 import littlechasiu.ctm.model.*
 import kotlin.math.ceil
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 object BlueMapIntegration {
   var mapStyle = MapStyle()
@@ -290,13 +292,15 @@ object BlueMapIntegration {
     return CSS_NAMED_COLORS.getOrDefault(cssColor, "#000")
   }
 
-  private fun mergeLines(lines: MutableList<BlueMapLine>) {
+  private fun mergeLines(lines: MutableList<BlueMapLine>, threshold: Double) {
     val points = lines.groupByTo(mutableMapOf()) { it.path[0] }
+    var merged = false
     for (line in lines) {
-      while (true) {
+      val adj = points[line.path.last()] ?: continue
+      for (i in 0 .. (adj.size * threshold).roundToInt()) {
         val key = line.path.last()
         val adjacentLines = points[key] ?: break
-        val mergedLine = adjacentLines.indexOfFirst { line.merge(it) }
+        val mergedLine = adjacentLines.indexOfFirst { if (line.merge(it)) { merged = true; true } else false }
         if (mergedLine != -1) {
           adjacentLines.removeAt(mergedLine)
           if (adjacentLines.isEmpty()) points.remove(key)
@@ -305,7 +309,9 @@ object BlueMapIntegration {
         }
       }
     }
-    lines.removeIf { it.tomb }
+    if (merged) {
+      lines.removeIf { it.tomb }
+    }
   }
 
   private fun updateTracks(blueMap: BlueMapAPI, tracks: List<Edge>) {
@@ -332,8 +338,15 @@ object BlueMapIntegration {
                 .toMutableList()
 
         // your mileage may vary
-        lines.sortWith(compareBy({ it.path[0].x }, { it.path[0].y }, { it.path[0].z }))
-        mergeLines(lines)
+        // We try to merge less lines as the input size increases, in order to prevent completely deadlocking the server
+        val threshold = 0.999.pow((lines.size - 1).toDouble())
+        if (threshold > 0.2) {
+          // if the threshold is too low, it's unlikely for the algorithm is merge anything at all, so don't bother
+          // for context, a threshold of 0.2 is going to attempt to merge 1 out of 3 adjacent nodes
+          lines.sortWith(compareBy({ it.path[0].x }, { it.path[0].y }, { it.path[0].z }))
+          mergeLines(lines, threshold)
+        }
+
 
         for (line in lines) {
           val markerBuilder = LineMarker
