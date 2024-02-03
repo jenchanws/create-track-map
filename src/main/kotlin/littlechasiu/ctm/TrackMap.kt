@@ -82,6 +82,7 @@ object TrackMap {
     server.mapView = config.mapView
     server.dimensions = config.dimensions
     server.layers = config.layers
+    BlueMapIntegration.mapStyle = config.mapStyle
   }
 
   private fun reload() {

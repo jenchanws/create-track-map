@@ -1,6 +1,7 @@
 package littlechasiu.ctm
 
 import com.simibubi.create.Create
+import com.simibubi.create.content.trains.display.GlobalTrainDisplayData
 import com.simibubi.create.content.trains.entity.Train
 import com.simibubi.create.content.trains.graph.TrackEdge
 import com.simibubi.create.content.trains.graph.TrackGraph
@@ -60,8 +61,7 @@ class TrackWatcher() {
       try {
         update()
       } catch (e: Exception) {
-        TrackMap.LOGGER.warn("Exception during update loop")
-        e.printStackTrace()
+        TrackMap.LOGGER.warn("Exception during update loop", e)
         continue
       }
       delay(watchInterval)
@@ -84,22 +84,20 @@ class TrackWatcher() {
     private val angle get() = internal.angleOn(edge)
     private val assembling get() = internal.assembling
 
-    override fun equals(other: Any?) =
-      other != null && javaClass == other.javaClass &&
-        internal == (other as CreateStation).internal
+    override fun equals(other: Any?) = other != null && javaClass == other.javaClass && internal == (other as CreateStation).internal
 
     override fun hashCode() = internal.hashCode()
 
     val sendable
-      get() =
-        Station(
-          id = id,
-          name = name,
-          dimension = dimension,
-          location = location.sendable,
-          angle = angle,
-          assembling = assembling,
-        )
+      get() = Station(
+        id = id,
+        name = name,
+        dimension = dimension,
+        location = location.sendable,
+        angle = angle,
+        assembling = assembling,
+        summary = GlobalTrainDisplayData.prepare(name, 6).map { it.sendable },
+      )
   }
 
   data class CreateSignal(
@@ -128,39 +126,36 @@ class TrackWatcher() {
       this.reverseSegment = rev
     }
 
-    override fun equals(other: Any?) =
-      other != null && javaClass == other.javaClass &&
-        internal == (other as CreateSignal).internal
+    override fun equals(other: Any?) = other != null && javaClass == other.javaClass && internal == (other as CreateSignal).internal
 
     override fun hashCode() = internal.hashCode()
 
     val sendable
-      get() =
-        Signal(
-          id = id,
-          dimension = dimension,
-          location = location.sendable,
-          forward = when (forwardState) {
-            null -> null
-            SignalState.INVALID -> null
-            else -> SignalSide(
-              type = forwardType!!,
-              state = forwardState!!,
-              angle = forwardAngle,
-              block = forwardGroup?.id,
-            )
-          },
-          reverse = when (reverseState) {
-            null -> null
-            SignalState.INVALID -> null
-            else -> SignalSide(
-              type = reverseType!!,
-              state = reverseState!!,
-              angle = reverseAngle,
-              block = reverseGroup?.id,
-            )
-          },
-        )
+      get() = Signal(
+        id = id,
+        dimension = dimension,
+        location = location.sendable,
+        forward = when (forwardState) {
+          null -> null
+          SignalState.INVALID -> null
+          else -> SignalSide(
+            type = forwardType!!,
+            state = forwardState!!,
+            angle = forwardAngle,
+            block = forwardGroup?.id,
+          )
+        },
+        reverse = when (reverseState) {
+          null -> null
+          SignalState.INVALID -> null
+          else -> SignalSide(
+            type = reverseType!!,
+            state = reverseState!!,
+            angle = reverseAngle,
+            block = reverseGroup?.id,
+          )
+        },
+      )
   }
 
   data class CreateSignalBlock(
@@ -173,21 +168,17 @@ class TrackWatcher() {
     val segments = mutableListOf<Track>()
     val portals = mutableSetOf<Portal>()
 
-    override fun equals(other: Any?) =
-      other != null && javaClass == other.javaClass &&
-        internal == (other as CreateSignalBlock).internal &&
-        segments == other.segments
+    override fun equals(other: Any?) = other != null && javaClass == other.javaClass && internal == (other as CreateSignalBlock).internal && segments == other.segments
 
     override fun hashCode() = internal.hashCode()
 
     val sendable
-      get() =
-        Block(
-          id = id,
-          occupied = occupied,
-          reserved = reserved,
-          segments = segments.map { it.sendable },
-        )
+      get() = Block(
+        id = id,
+        occupied = occupied,
+        reserved = reserved,
+        segments = segments.map { it.sendable },
+      )
   }
 
   private var nodes = mutableSetOf<TrackNode>()
@@ -197,34 +188,27 @@ class TrackWatcher() {
   private var trains = mutableSetOf<Train>()
   private var blocks = mutableMapOf<UUID, CreateSignalBlock>()
 
-  fun portalsInBlock(block: UUID): Collection<Portal> =
-    blocks[block]?.portals ?: listOf()
+  fun portalsInBlock(block: UUID): Collection<Portal> = blocks[block]?.portals ?: listOf()
 
   val network
-    get() =
-      Network(
-        tracks = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
-        portals = edges.map { it.sendable }.filterIsInstance<Portal>().toList(),
-        stations = stations.map { it.sendable }.toList(),
-      )
+    get() = Network(
+      tracks = edges.map { it.sendable }.filterIsInstance<Edge>().toList(),
+      portals = edges.map { it.sendable }.filterIsInstance<Portal>().toList(),
+      stations = stations.map { it.sendable }.toList(),
+    )
 
   val signalStatus
-    get() =
-      SignalStatus(
-        signals = signals.map { it.sendable }.toList(),
-      )
+    get() = SignalStatus(
+      signals = signals.map { it.sendable }.toList(),
+    )
 
   val blockStatus
-    get() =
-      BlockStatus(
-        blocks = blocks.values.map { it.sendable }.toList()
-      )
+    get() = BlockStatus(blocks = blocks.values.map { it.sendable }.toList())
 
   val trainStatus
-    get() =
-      TrainStatus(
-        trains = trains.map { it.sendable }.toList(),
-      )
+    get() = TrainStatus(
+      trains = trains.map { it.sendable }.toList(),
+    )
 
   private suspend fun update() {
     val networkEdges = mutableMapOf<TrackGraph, Set<TrackEdge>>()
@@ -236,8 +220,7 @@ class TrackWatcher() {
     RR.trackNetworks.forEach { (_, net) ->
       // Track topology
       val netNodes = net.nodes.map { net.locateNode(it) }
-      val netEdges = netNodes.map { net.getConnectionsFrom(it) }
-        .flatMap { it.values }
+      val netEdges = netNodes.map { net.getConnectionsFrom(it) }.flatMap { it.values }
       thisNodes.addAll(netNodes)
       thisEdges.addAll(netEdges)
 
@@ -273,12 +256,10 @@ class TrackWatcher() {
           }
         } else {
           if (edge.edgeData.hasSignalBoundaries()) {
-            val signals =
-              edge.edgeData.points.filterIsInstance<SignalBoundary>()
-                .sortedBy {
-                  if (it.isPrimary(edge.node2)) it.position
-                  else edge.length - it.position
-                }
+            val signals = edge.edgeData.points.filterIsInstance<SignalBoundary>().sortedBy {
+              if (it.isPrimary(edge.node2)) it.position
+              else edge.length - it.position
+            }
             if (signals.isEmpty()) {
               return
             }
@@ -286,39 +267,21 @@ class TrackWatcher() {
             val path = edge.path
             val segments = mutableListOf<Track>()
 
-            segments.add(
-              path.divideAt(
-                (
-                  if (signals[0].isPrimary(edge.node2)) signals[0].position
-                  else edge.length - signals[0].position
-                  ) / edge.length
-              ).first
-            )
+            segments.add(path.divideAt((if (signals[0].isPrimary(edge.node2)) signals[0].position
+            else edge.length - signals[0].position) / edge.length).first)
 
             signals.windowed(2).forEach { sigs ->
               val leftSig = sigs[0]
               val rightSig = sigs[1]
-              val (rest, _) = path.divideAt(
-                (if (rightSig.isPrimary(edge.node2)) rightSig.position
-                else edge.length - rightSig.position) / edge.length
-              )
-              val (_, seg) = rest.divideAt(
-                (if (leftSig.isPrimary(edge.node2)) leftSig.position
-                else edge.length - leftSig.position) / edge.length
-              )
+              val (rest, _) = path.divideAt((if (rightSig.isPrimary(edge.node2)) rightSig.position
+              else edge.length - rightSig.position) / edge.length)
+              val (_, seg) = rest.divideAt((if (leftSig.isPrimary(edge.node2)) leftSig.position
+              else edge.length - leftSig.position) / edge.length)
               segments.add(seg)
             }
 
-            segments.add(
-              path.divideAt(
-                (
-                  if (signals.last()
-                      .isPrimary(edge.node2)
-                  ) signals.last().position
-                  else edge.length - signals.last().position
-                  ) / edge.length
-              ).second
-            )
+            segments.add(path.divideAt((if (signals.last().isPrimary(edge.node2)) signals.last().position
+            else edge.length - signals.last().position) / edge.length).second)
 
             segments.windowed(2).zip(signals).forEach { (segs, sig) ->
               val leftSeg = segs[0]
@@ -328,9 +291,7 @@ class TrackWatcher() {
               thisBlocks[sig.getGroup(edge.node2)]?.segments?.add(rightSeg)
             }
           } else {
-            thisBlocks[edge.edgeData.getEffectiveEdgeGroupId(net)]?.segments?.add(
-              edge.path
-            )
+            thisBlocks[edge.edgeData.getEffectiveEdgeGroupId(net)]?.segments?.add(edge.path)
           }
         }
       }
@@ -345,5 +306,7 @@ class TrackWatcher() {
     signalChannel.send(signalStatus)
     blockChannel.send(blockStatus)
     trainChannel.send(trainStatus)
+
+    BlueMapIntegration.update()
   }
 }
